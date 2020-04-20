@@ -1,3 +1,5 @@
+package gomokugame;
+
 public class GamePiece{
     
     private Player player;

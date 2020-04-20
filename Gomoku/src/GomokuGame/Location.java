@@ -1,3 +1,5 @@
+package gomokugame;
+
 public class Location{
 
     public int row;

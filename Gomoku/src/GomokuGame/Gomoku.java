@@ -1,13 +1,21 @@
+package gomokugame;
+
 import java.util.*;
 
 public class Gomoku{
     private GomokuBoard board;
     private Scanner scan;
+    private ArrayList<Player> players;
+    private boolean bidding;
 
-    public Gomoku(){
+    public Gomoku(boolean b, int t){
         this.board = new GomokuBoard(15);
-        board.addPlayer(new Player("p1", "X", this.board));
-        board.addPlayer(new Player("p2", "O", this.board));
+        bidding = b;
+
+        players = new ArrayList<Player>();
+        players.add(new Player("p1", "X", this.board, t));
+        players.add(new Player("p2", "O", this.board, t));
+
         scan = new Scanner(System.in);
     }
 
@@ -15,33 +23,45 @@ public class Gomoku{
         return board;
     }
 
-    public boolean playRound(){
-        for(Player p : this.board.getPlayers()){
-            System.out.println(this.board);
-            
-            GamePiece piece = null;
-            while( piece == null){
-                System.out.println(p.getName() + " play round");
-                int r = scan.nextInt();
-                int c = scan.nextInt();
-                piece = p.playTurn(new Location(r,c));
-            }
-            Player winner = board.check4Win(piece);
-            System.out.println(winner);
-            if(winner != null){
-                System.out.println(winner.getName() + " wins this round");
-                return true;
+    public boolean playNoBidRound(){
+        for(Player p : this.players){
+            boolean won = p.playTurn(this.scan);
+            if(won) return true;
+        }
+        return false;
+    }
+
+    public Player doBidding(){
+        for(Player p : this.players){
+            p.bid(scan);
+        }
+        Player bidWinner = players.get(0).lastBid > players.get(1).lastBid ? players.get(0) : players.get(1);
+        Player bidLoser  = players.get(0).lastBid > players.get(1).lastBid ? players.get(1) : players.get(0);
+        int highestBid  = players.get(0).lastBid > players.get(1).lastBid ? players.get(0).lastBid : players.get(1).lastBid;
+        bidWinner.subTokens(highestBid);
+        bidLoser.addTokens(highestBid);
+        return bidWinner;
+    }
+
+    public boolean playBidRound(){
+        Player bidWinner = doBidding();
+        boolean won = bidWinner.playTurn(this.scan);
+        return won;
+    }
+
+    public void playGomoku(){
+        boolean stop = false;
+        while(true){
+            stop = bidding ? playBidRound() : playNoBidRound();
+            if(stop){
+                return;
             }
         }
-        return false; 
     }
 
     public static void main(String[] args){
-        Gomoku game = new Gomoku();
-        boolean stop = false;
-        while(!stop){
-            stop = game.playRound();
-        }
+        Gomoku game = new Gomoku(true, 100);
+        game.playGomoku();
         
     }
 }

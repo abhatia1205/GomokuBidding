@@ -1,73 +1,54 @@
-import java.util.*;
+package gomokugame;
 
 public class GomokuBoard{
     
     private int width;
     private GamePiece[][] board;
-    private ArrayList<Player> players;
 
     public GomokuBoard(){
         this.width = 15;
         this.board = new GamePiece[width][width];
-        players = new ArrayList<Player>();
     }
 
     public GomokuBoard(int width){
         this.width = width;
         this.board = new GamePiece[width][width];
-        players = new ArrayList<Player>();
-    }
-
-    public int addPlayer(Player p){
-        players.add(p);
-        return 0;
-    }
-
-    public Player getPlayer(int index){
-        return players.get(index);
-    }
-
-    public ArrayList<Player> getPlayers(){
-        return players;
     }
 
     public GamePiece getPiece(Location l){
         return board[l.row()][l.col()];
     }
 
-    public int locationValid(Location l){
+    public boolean locationValid(Location l){
         if(l.row() >= width || l.row() < 0){
-            return -1;
+            return false;
         }
         if(l.col() >= width || l.col() < 0){
-            return -2;
+            return false;
         }
-        return 0;
+        return true;
     }
 
-    public int locationOccupied(Location l){
-        if(locationValid(l) < 0){
-            return -1;
-        }
+    public boolean locationOccupied(Location l){
         if(board[l.row()][l.col()] != null){
-            return -2;
+            return true;
         }
-        return 0;
+        return false;
     }
 
     public Player getPiecePlayer(Location l){
-        if(locationValid(l) == 0 && locationOccupied(l) != 0){
+        if(locationValid(l) && locationOccupied(l)){
             return getPiece(l).getPlayer();
         }
         return null;
     }
 
-    public int placePiece(GamePiece p){
-        if(locationOccupied(p.getLoc()) == 0){
+    public boolean placePiece(GamePiece p){
+        if(locationValid(p.getLoc()) && ! locationOccupied(p.getLoc())){
             board[p.getLoc().row()][p.getLoc().col()] = p;
-            return 0;
+            return true;
         }
-        return -1;
+        return false;
     }
 
     public String toString(){
@@ -77,7 +58,7 @@ public class GomokuBoard{
                 
                 s += g==null ? " * |" : " " + g + " |";
             }
-            s += "\n ----------------------------------------------------\n";
+            s += "\n ---------------------------------------------------------------\n";
         }
         return s;
     }
