@@ -23,13 +23,16 @@ public class ConsolePlayer extends Player {
         GamePiece piece = null;
         while( piece == null){
             System.out.println(this.getName() + " play round");
+            System.out.print("Row: ");
             int r = scan.nextInt();
+            System.out.print("Col: ");
             int c = scan.nextInt();
             piece = new GamePiece(this, new Location(r,c));
             if(!this.getBoard().placePiece(piece)){
                 piece = null;
             }
         }
+        System.out.println(this.getBoard());
         Player winner = this.getBoard().check4Win(piece);
         if(winner != null){
             System.out.println(winner.getName() + " wins this round");

@@ -60,6 +60,5 @@ public class Gomoku{
     public static void main(String[] args){
         Gomoku game = new Gomoku(true, 100);
         game.playGomoku();
-        
     }
 }
