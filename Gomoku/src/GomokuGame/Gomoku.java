@@ -49,6 +49,7 @@ public class Gomoku{
         return won;
     }
 
+    
     public void playGomoku(){
         boolean stop = false;
         while(true){
