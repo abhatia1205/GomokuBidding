@@ -4,7 +4,6 @@ import java.util.*;
 
 public class Gomoku{
     private GomokuBoard board;
-    private Scanner scan;
     private ArrayList<Player> players;
     private boolean bidding;
 
@@ -13,10 +12,8 @@ public class Gomoku{
         bidding = b;
 
         players = new ArrayList<Player>();
-        players.add(new Player("p1", "X", this.board, t));
-        players.add(new Player("p2", "O", this.board, t));
-
-        scan = new Scanner(System.in);
+        players.add(new ConsolePlayer("p1", "X", this.board, t));
+        players.add(new ConsolePlayer("p2", "O", this.board, t));
     }
 
     public GomokuBoard getBoard(){
@@ -25,7 +22,7 @@ public class Gomoku{
 
     public boolean playNoBidRound(){
         for(Player p : this.players){
-            boolean won = p.playTurn(this.scan);
+            boolean won = p.playTurn();
             if(won) return true;
         }
         return false;
@@ -33,7 +30,7 @@ public class Gomoku{
 
     public Player doBidding(){
         for(Player p : this.players){
-            p.bid(scan);
+            p.bid();
         }
         Player bidWinner = players.get(0).lastBid > players.get(1).lastBid ? players.get(0) : players.get(1);
         Player bidLoser  = players.get(0).lastBid > players.get(1).lastBid ? players.get(1) : players.get(0);
@@ -45,7 +42,7 @@ public class Gomoku{
 
     public boolean playBidRound(){
         Player bidWinner = doBidding();
-        boolean won = bidWinner.playTurn(this.scan);
+        boolean won = bidWinner.playTurn();
         return won;
     }
 
