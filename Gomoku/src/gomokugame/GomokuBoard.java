@@ -2,7 +2,7 @@ package gomokugame;
 
 public class GomokuBoard{
     
-    private int width;
+    public int width;
     private GamePiece[][] board;
 
     public GomokuBoard(){
@@ -13,6 +13,10 @@ public class GomokuBoard{
     public GomokuBoard(int width){
         this.width = width;
         this.board = new GamePiece[width][width];
+    }
+
+    public GamePiece[][] board(){
+        return board;
     }
 
     public GamePiece getPiece(Location l){

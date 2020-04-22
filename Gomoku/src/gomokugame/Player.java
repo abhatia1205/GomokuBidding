@@ -1,11 +1,11 @@
 package gomokugame;
 
 public abstract class Player {
-    private String name;
-    private String symbol;
-    private GomokuBoard board;
+    protected String name;
+    protected String symbol;
+    protected GomokuBoard board;
 
-    private int tokens;
+    protected int tokens;
     public int lastBid;
 
     public Player(String n, String s, GomokuBoard b){
@@ -53,5 +53,9 @@ public abstract class Player {
     public abstract int bid();
 
     public abstract boolean playTurn();
+
+    public String toString(){
+        return name;
+    }
 
 }
