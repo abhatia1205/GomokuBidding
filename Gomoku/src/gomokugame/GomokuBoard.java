@@ -60,9 +60,9 @@ public class GomokuBoard{
         for(GamePiece[] r : board){
             for(GamePiece g : r){
                 
-                s += g==null ? " * |" : " " + g + " |";
+                s += g==null ? " * " : " " + g + " ";
             }
-            s += "\n ---------------------------------------------------------------\n";
+            s += "\n";
         }
         return s;
     }
