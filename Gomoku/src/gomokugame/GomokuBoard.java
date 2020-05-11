@@ -55,11 +55,11 @@ public class GomokuBoard{
         return false;
     }
 
-    public boolean removePiece(GamePiece p){
-        if(board[p.getLoc().row()][p.getLoc().col()] != p){
+    public boolean removePiece(Location l){
+        if(board[l.row()][l.col()] == null){
             return false;
         }
-        board[p.getLoc().row()][p.getLoc().col()] = null;
+        board[l.row()][l.col()] = null;
         return true;
     }
 

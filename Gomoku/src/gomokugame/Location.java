@@ -22,5 +22,10 @@ public class Location{
     public int col(){
         return col;
     }
+
+    public void set(int r, int c){
+        row = r;
+        col = c;
+    }
     
 }
