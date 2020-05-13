@@ -22,8 +22,12 @@ public class Gomoku{
 
     public boolean playNoBidRound(){
         for(Player p : this.players){
-            boolean won = p.playTurn();
-            if(won) return true;
+            GamePiece a = new GamePiece(p, p.playTurn());
+            board.placePiece(a);
+            if(board.check4Win(a) != null){
+                System.out.println(p + " won the game");
+                return true;
+            }
         }
         return false;
     }
@@ -42,8 +46,13 @@ public class Gomoku{
 
     public boolean playBidRound(){
         Player bidWinner = doBidding();
-        boolean won = bidWinner.playTurn();
-        return won;
+        GamePiece a = new GamePiece(bidWinner, bidWinner.playTurn());
+        board.placePiece(a);
+        if(board.check4Win(a) != null){
+            System.out.println(bidWinner + " won the game");
+            return true;
+        }
+        return false;
     }
 
     

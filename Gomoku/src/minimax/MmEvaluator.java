@@ -168,12 +168,12 @@ public class MmEvaluator {
                 switch(openEnds){
                     case 2:
                         if(myTurn){
-                            return 100000000;
+                            return 10000000;
                         }
-                        return 500000;
+                        return 50000;
                     case 1:
                         if(myTurn){
-                            return 100000000;
+                            return 10000000;
                         }
                         return 50;
                 }
@@ -181,12 +181,12 @@ public class MmEvaluator {
                 switch(openEnds){
                     case 2:
                         if(myTurn){
-                            return 10000;
+                            return 5000;
                         }
-                        return 50;
+                        return 1000;
                     case 1:
                         if(myTurn){
-                            return 7;
+                            return 50;
                         }
                         return 5;
                 }
@@ -205,6 +205,6 @@ public class MmEvaluator {
                         return 1;
                 }
         }
-        return 200000000;
+        return 20000000;
     }
 }

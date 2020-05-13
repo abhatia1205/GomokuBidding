@@ -47,6 +47,10 @@ public class GomokuBoard{
         return null;
     }
 
+    public boolean validMove(Location l){
+        return locationValid(l) && !locationOccupied(l);
+    }
+
     public boolean placePiece(GamePiece p){
         if(locationValid(p.getLoc()) && ! locationOccupied(p.getLoc())){
             board[p.getLoc().row()][p.getLoc().col()] = p;

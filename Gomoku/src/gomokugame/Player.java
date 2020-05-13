@@ -52,7 +52,7 @@ public abstract class Player {
 
     public abstract int bid();
 
-    public abstract boolean playTurn();
+    public abstract Location playTurn();
 
     public String toString(){
         return name;
