@@ -63,7 +63,7 @@ public class ConsoleGomoku{
         GamePiece a = new GamePiece(bidWinner, bidWinner.playTurn());
         board.placePiece(a);
         if(board.check4Win(a) != null){
-            System.out.println(bidWinner + " won the game");
+            System.out.println("Congratulations!!!! " + bidWinner + " won the game");
             return true;
         }
         return false;

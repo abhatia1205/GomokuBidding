@@ -10,7 +10,6 @@ public class MinimaxTest {
         MmPlayer p2 = new MmPlayer("p2", "O", b);
         p1.setup(p2, 1);
         p2.setup(p1, 2);
-        
         p1.testPiece(new Location(7,7));
         p2.testPiece(new Location(7,8));
         System.out.println(p1.testEval(false));
