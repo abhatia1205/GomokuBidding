@@ -12,13 +12,13 @@ public class MmEvaluator {
     private int count;
     private int openEnds;
 
-    public MmEvaluator(Player p, GomokuBoard b){
-        player = p;
+    public MmEvaluator(GomokuBoard b, Player p){
         board = b;
+        player = p;
     }
 
     public int boardStateScore(boolean myTurn){
-        score = scoreHoriz(myTurn) + scoreVerti(myTurn) + scoreBackDiag(myTurn) + scoreDiag(myTurn);
+        int score = scoreHoriz(myTurn) + scoreVerti(myTurn) + scoreBackDiag(myTurn) + scoreDiag(myTurn);
         return score;
     }
 
@@ -141,14 +141,14 @@ public class MmEvaluator {
             counting = false;
             openEnds = 1;
         }
+        else if(p == null){
+            openEnds = 1;
+        }
         else if(counting && p.getPlayer() != player){
             score += scorePieces(myTurn, openEnds, count);
             count = 0;
             counting = false;
             openEnds = 0;
-        }
-        else if(p == null){
-            openEnds = 1;
         }
         else if(p.getPlayer() != player){
             openEnds = 0;

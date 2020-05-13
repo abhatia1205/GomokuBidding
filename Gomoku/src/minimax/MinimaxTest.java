@@ -7,12 +7,24 @@ public class MinimaxTest {
     public static void main(String args[]){
         GomokuBoard b = new GomokuBoard();
         MmPlayer p1 = new MmPlayer("p1", "X", b);
-        p1.playTest(new Location(9,7));
-        p1.playTest(new Location(8,8));
-        p1.playTest(new Location(7,9));
-        p1.playTest(new Location(6,10));
-        p1.playTest(new Location(5,11));
+        MmPlayer p2 = new MmPlayer("p2", "O", b);
+        p1.setupEvalOpp(p2);
+        p2.setupEvalOpp(p1);
+        
+        p1.testPiece(new Location(7,7));
+        p2.testPiece(new Location(7,8));
+        p1.testPiece(new Location(8,7));
+        p2.testPiece(new Location(7,9));
+
+        MmPlayer[] players = {p1, p2};
         System.out.println(b);
-        System.out.println(p1.evaluateBoardState(true));
+        for(int i = 0; i < 7; i++)
+            for(MmPlayer p : players){
+                Location a = p.nextMove(1);
+                System.out.println(a);
+                p.testPiece(a);
+                System.out.println(b);
+            }
+        
     }
 }
