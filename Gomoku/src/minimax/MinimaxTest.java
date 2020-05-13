@@ -21,7 +21,7 @@ public class MinimaxTest {
         for(int i = 0; i < 7; i++)
             for(MmPlayer p : players){
                 Location a = p.nextMove(1);
-                System.out.println(a);
+                System.out.println(a +" " + p);
                 p.testPiece(a);
                 System.out.println(b);
             }

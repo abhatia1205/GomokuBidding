@@ -36,18 +36,18 @@ public class MmPlayer extends Player{
     }
 
     public Location nextMove(int depth){
-        Location bestMove = new Location(-1,-1);
-        int bestScore = -10000;
+        Location bestMove = new Location();
+        int bestScore = -100000000;
         int score;
 
         for(int r = 0; r < getBoard().board().length; r++){
             for(int c = 0; c < getBoard().board().length; c++){
                 if(!getBoard().locationOccupied(new Location(r,c))){
                     getBoard().placePiece(new GamePiece(this, new Location(r,c)));
-                    score = moveTreeScore(depth, false);
+                    score = moveTreeScore(depth, true);
                     getBoard().removePiece(new Location(r,c));
 
-                    //System.out.println(score + "  \t\t" + r + "  " + c);
+                    
 
                     if(score > bestScore){
                         bestScore = score;
@@ -56,12 +56,13 @@ public class MmPlayer extends Player{
                 }
             }
         }
+        System.out.println(bestScore + "  \t\t" + bestMove.row() + "  " + bestMove.col());
         return bestMove;
     }
 
     public int moveTreeScore(int depth, boolean myTurn){
-        int score = myTurn ? -100000000 : 100000000;
-        int highScore = 0;
+        int score = 0;
+        int highScore = myTurn ? -1000000000 : 1000000000;
         Location loc = new Location();
         Player p = this;
         if(depth <= 1){
@@ -82,6 +83,6 @@ public class MmPlayer extends Player{
                 }
             }
         }
-        return score;
+        return highScore;
     }
 }
