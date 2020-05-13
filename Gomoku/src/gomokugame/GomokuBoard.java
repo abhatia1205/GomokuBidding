@@ -68,8 +68,11 @@ public class GomokuBoard{
     }
 
     public String toString(){
-        String s = "";
+        String s = "   0  1  2  3  4  5  6  7  8  9  0  1  2  3  4\n";
+        Integer[] a = {0,1,2,3,4,5,6,7,8,9,0,1,2,3,4};
+        int i = 0;
         for(GamePiece[] r : board){
+            s += a[i++] + " ";
             for(GamePiece g : r){
                 
                 s += g==null ? " * " : " " + g + " ";

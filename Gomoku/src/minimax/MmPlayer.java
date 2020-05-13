@@ -17,7 +17,7 @@ public class MmPlayer extends Player{
     public void setup(Player p, int d){
         opp = p;
         evalOpp = new MmEvaluator(this.getBoard(), p);
-        searchDepth = 2;
+        searchDepth = d;
     }
 
     public int bid(){
@@ -38,11 +38,12 @@ public class MmPlayer extends Player{
     }
 
     public Location boundBoxStart(){
-        int r1 = 0;
-        int c1 = 0;
-        for(int r = 0; r < getBoard().board().length; r++){
-            for(int c = 0; c < getBoard().board().length; c++){
-                if(getBoard().board()[r][c] == null){
+        int boardWidth = getBoard().board().length;
+        int r1 = boardWidth -1;
+        int c1 = boardWidth -1;
+        for(int r = 0; r < boardWidth; r++){
+            for(int c = 0; c < boardWidth; c++){
+                if(getBoard().board()[r][c] != null){
                     if(r < r1){
                         r1 = r;
                     }
@@ -59,11 +60,11 @@ public class MmPlayer extends Player{
 
     public Location boundBoxEnd(){
         int boardWidth = getBoard().board().length;
-        int r1 = boardWidth;
-        int c1 = boardWidth;
+        int r1 = 0;
+        int c1 = 0;
         for(int r = 0; r < boardWidth; r++){
             for(int c = 0; c < boardWidth; c++){
-                if(getBoard().board()[r][c] == null){
+                if(getBoard().board()[r][c] != null){
                     if(r > r1){
                         r1 = r;
                     }
@@ -73,8 +74,8 @@ public class MmPlayer extends Player{
                 }
             }
         }
-        r1 = Math.min(boardWidth, r1 + boundingBoxAddition);
-        c1 = Math.min(boardWidth, c1 + boundingBoxAddition);
+        r1 = Math.min(boardWidth -1, r1 + boundingBoxAddition);
+        c1 = Math.min(boardWidth -1, c1 + boundingBoxAddition);
         return new Location(r1,c1);
     }
 

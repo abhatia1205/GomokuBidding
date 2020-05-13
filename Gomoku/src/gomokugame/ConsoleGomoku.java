@@ -1,13 +1,14 @@
 package gomokugame;
 
 import java.util.*;
+import minimax.*;
 
-public class Gomoku{
+public class ConsoleGomoku{
     private GomokuBoard board;
     private ArrayList<Player> players;
     private boolean bidding;
 
-    public Gomoku(boolean b, int t){
+    public ConsoleGomoku(boolean b, int t){
         this.board = new GomokuBoard(15);
         bidding = b;
 
@@ -16,12 +17,25 @@ public class Gomoku{
         players.add(new ConsolePlayer("p2", "O", this.board, t));
     }
 
+    public ConsoleGomoku(boolean c, String s){
+        this.board = new GomokuBoard(15);
+        bidding = false;
+        players = new ArrayList<Player>();
+        players.add(new ConsolePlayer("p1", "X", this.board, 0));
+        MmPlayer a = new MmPlayer("p2", "O", this.board);
+        a.setup(players.get(0), 3);
+        players.add(a);
+
+        
+    }
+
     public GomokuBoard getBoard(){
         return board;
     }
 
     public boolean playNoBidRound(){
         for(Player p : this.players){
+            System.out.println(this.getBoard());
             GamePiece a = new GamePiece(p, p.playTurn());
             board.placePiece(a);
             if(board.check4Win(a) != null){
@@ -67,7 +81,7 @@ public class Gomoku{
     }
 
     public static void main(String[] args){
-        Gomoku game = new Gomoku(true, 100);
+        ConsoleGomoku game = new ConsoleGomoku(true, "hi");
         game.playGomoku();
     }
 }
