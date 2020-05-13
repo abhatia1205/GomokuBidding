@@ -16,29 +16,20 @@ public class ConsolePlayer extends Player {
         scan = new Scanner(System.in);
     }
 
-    public boolean playTurn(){
-
-        System.out.println(this.getBoard());
-
-        GamePiece piece = null;
-        while( piece == null){
+    public Location playTurn(){
+        Location a = null;
+        while( a == null){
             System.out.println(this.getName() + " play round");
             System.out.print("Row: ");
             int r = scan.nextInt();
             System.out.print("Col: ");
             int c = scan.nextInt();
-            piece = new GamePiece(this, new Location(r,c));
-            if(!this.getBoard().placePiece(piece)){
-                piece = null;
+            a = new Location(r,c);
+            if(!getBoard().validMove(a)){
+                a = null;
             }
         }
-        System.out.println(this.getBoard());
-        Player winner = this.getBoard().check4Win(piece);
-        if(winner != null){
-            System.out.println(winner.getName() + " wins this round");
-            return true;
-        }
-        return false; 
+        return a;
     }
 
     public int bid(){

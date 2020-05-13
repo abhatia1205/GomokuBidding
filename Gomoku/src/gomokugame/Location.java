@@ -6,8 +6,8 @@ public class Location{
     public int col;
 
     public Location(){
-        row = 0;
-        col = 0;
+        row = -1;
+        col = -1;
     }
 
     public Location(int r, int c){
@@ -21,6 +21,16 @@ public class Location{
 
     public int col(){
         return col;
+    }
+
+    public void set(int r, int c){
+        row = r;
+        col = c;
+    }
+
+    public String toString(){
+        String s = "(" + row + ", " + col + ")";
+        return s;
     }
     
 }

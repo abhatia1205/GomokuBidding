@@ -2,7 +2,7 @@ package gomokugame;
 
 public class GomokuBoard{
     
-    private int width;
+    public int width;
     private GamePiece[][] board;
 
     public GomokuBoard(){
@@ -13,6 +13,10 @@ public class GomokuBoard{
     public GomokuBoard(int width){
         this.width = width;
         this.board = new GamePiece[width][width];
+    }
+
+    public GamePiece[][] board(){
+        return board;
     }
 
     public GamePiece getPiece(Location l){
@@ -43,6 +47,10 @@ public class GomokuBoard{
         return null;
     }
 
+    public boolean validMove(Location l){
+        return locationValid(l) && !locationOccupied(l);
+    }
+
     public boolean placePiece(GamePiece p){
         if(locationValid(p.getLoc()) && ! locationOccupied(p.getLoc())){
             board[p.getLoc().row()][p.getLoc().col()] = p;
@@ -51,26 +59,37 @@ public class GomokuBoard{
         return false;
     }
 
+    public boolean removePiece(Location l){
+        if(board[l.row()][l.col()] == null){
+            return false;
+        }
+        board[l.row()][l.col()] = null;
+        return true;
+    }
+
     public String toString(){
-        String s = "";
+        String s = "   0  1  2  3  4  5  6  7  8  9  0  1  2  3  4\n";
+        Integer[] a = {0,1,2,3,4,5,6,7,8,9,0,1,2,3,4};
+        int i = 0;
         for(GamePiece[] r : board){
+            s += a[i++] + " ";
             for(GamePiece g : r){
                 
-                s += g==null ? " * |" : " " + g + " |";
+                s += g==null ? " * " : " " + g + " ";
             }
-            s += "\n ---------------------------------------------------------------\n";
+            s += "\n";
         }
         return s;
     }
 
     public Player check4Win(GamePiece g){
-        if(check4WinHoriz(g) == 0 || check4WinVertical(g) == 0 || check4WinDia(g) == 0 || check4WinDiaBack(g) == 0){
+        if(check4WinHoriz(g) || check4WinVertical(g) || check4WinDia(g) || check4WinDiaBack(g)){
             return g.getPlayer();
         }
         return null;
     }
 
-    private int check4WinHoriz(GamePiece g){
+    private boolean check4WinHoriz(GamePiece g){
         int row = g.getLoc().row();
         int center = g.getLoc().col();
         int counter = 0;
@@ -78,17 +97,17 @@ public class GomokuBoard{
             if(getPiecePlayer(new Location(row, col)) == g.getPlayer()){
                 counter++;
                 if(counter >= 5){
-                    return 0;
+                    return true;
                 }
             }
             else{
                 counter = 0;
             }
         }
-        return -1;
+        return false;
     }
 
-    private int check4WinVertical(GamePiece g){
+    private boolean check4WinVertical(GamePiece g){
         int center = g.getLoc().row();
         int col = g.getLoc().col();
         int counter = 0;
@@ -96,17 +115,17 @@ public class GomokuBoard{
             if(getPiecePlayer(new Location(row, col)) == g.getPlayer()){
                 counter++;
                 if(counter >= 5){
-                    return 0;
+                    return true;
                 }
             }
             else{
                 counter = 0;
             }
         }
-        return -1;
+        return false;
     }
 
-    private int check4WinDiaBack(GamePiece g){
+    private boolean check4WinDiaBack(GamePiece g){
         int centerR = g.getLoc().row();
         int centerC = g.getLoc().col();
         int counter = 0;
@@ -115,7 +134,7 @@ public class GomokuBoard{
             if(getPiecePlayer(new Location(row, col)) == g.getPlayer()){
                 counter++;
                 if(counter >= 5){
-                    return 0;
+                    return true;
                 }
             }
             else{
@@ -123,10 +142,10 @@ public class GomokuBoard{
             }
             col++;
         }
-        return -1;
+        return false;
     }
 
-    private int check4WinDia(GamePiece g){
+    private boolean check4WinDia(GamePiece g){
         int centerR = g.getLoc().row();
         int centerC = g.getLoc().col();
         int counter = 0;
@@ -135,7 +154,7 @@ public class GomokuBoard{
             if(getPiecePlayer(new Location(row, col)) == g.getPlayer()){
                 counter++;
                 if(counter >= 5){
-                    return 0;
+                    return true;
                 }
             }
             else{
@@ -143,6 +162,6 @@ public class GomokuBoard{
             }
             col--;
         }
-        return -1;
+        return false;
     }
 }
