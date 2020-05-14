@@ -49,9 +49,6 @@ public class GomokuWindow extends JFrame
     //private Cell currentPlayer; // the current player
 
     //private Cell[][] board; // Game board of ROWS-by-COLS cells
-    
-
-    //private Random random;
 
     // ----------------------------------------------------------------------
     // INSTANCE VARIABLES for graphics
@@ -145,8 +142,6 @@ public class GomokuWindow extends JFrame
 
         // ----------------------------------------
         // Now define game components and initialize the game.
-
-        //random = new Random();
         b = new GamePiece[ROWS][COLS]; // allocate array
         currentPlayer = players.get( 0 );
         restartGame(); // initialize the game board contents and game variables
@@ -191,14 +186,6 @@ public class GomokuWindow extends JFrame
         }
     }
 
-
-    // Is row,col a valid move?
- /*   public boolean validMove( int row, int col )
-    {
-        return row >= 0 && row < ROWS && col >= 0 && col < COLS && b[row][col] == null;
-    }*/
-
-
     // Make the move and update the state of the game.
     public void updateGameState( GamePiece a, int rowSelected, int colSelected)
     {
@@ -237,22 +224,6 @@ public class GomokuWindow extends JFrame
         }
         return true; // no more empty cell, it's a draw
     }
-
-
-    // Return true if the player with "theMark" has won after placing at
-    // (rowSelected, colSelected)
-/*    public boolean hasWon( Cell theMark, int rowSelected, int colSelected )
-    {
-        return ( ( board[rowSelected][0] == theMark // 3-in-the-row
-            && board[rowSelected][1] == theMark && board[rowSelected][2] == theMark )
-            || ( board[0][colSelected] == theMark // 3-in-the-column
-                && board[1][colSelected] == theMark && board[2][colSelected] == theMark )
-            || ( board[0][0] == theMark // 3-in-the-diagonal
-                && board[1][1] == theMark && board[2][2] == theMark )
-            || ( board[0][2] == theMark // 3-in-the-opposite-diagonal
-                && board[1][1] == theMark && board[2][0] == theMark ) );
-    }*/
-
 
     // ----------------------------------------------------------------------
     // INNER CLASS for performing graphics
