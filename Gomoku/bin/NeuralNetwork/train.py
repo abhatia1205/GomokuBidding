@@ -66,6 +66,8 @@ def train(games):
             	action = (index//available[0], index%available[0])
 
             	new_state, bets, new_available = makeMove(state, available, action, bets[agent.id], agent)
+
+            	rewards = getReward()
             	
 
 
