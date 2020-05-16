@@ -38,12 +38,12 @@ public class MmPlayer extends Player{
     }
 
     public Location boundBoxStart(){
-        int boardWidth = getBoard().board().length;
+        int boardWidth = getBoard().b().length;
         int r1 = boardWidth -1;
         int c1 = boardWidth -1;
         for(int r = 0; r < boardWidth; r++){
             for(int c = 0; c < boardWidth; c++){
-                if(getBoard().board()[r][c] != null){
+                if(getBoard().b()[r][c] != null){
                     if(r < r1){
                         r1 = r;
                     }
@@ -59,12 +59,12 @@ public class MmPlayer extends Player{
     }
 
     public Location boundBoxEnd(){
-        int boardWidth = getBoard().board().length;
+        int boardWidth = getBoard().b().length;
         int r1 = 0;
         int c1 = 0;
         for(int r = 0; r < boardWidth; r++){
             for(int c = 0; c < boardWidth; c++){
-                if(getBoard().board()[r][c] != null){
+                if(getBoard().b()[r][c] != null){
                     if(r > r1){
                         r1 = r;
                     }
