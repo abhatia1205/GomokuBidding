@@ -105,7 +105,7 @@ public class MmPlayer extends Player{
                 }
             }
         }
-        System.out.println(bestScore + "\t\t" + bestMove.row() + "  " + bestMove.col());
+        //System.out.println(bestScore + "\t\t" + bestMove.row() + "  " + bestMove.col());
         return bestMove;
     }
 
