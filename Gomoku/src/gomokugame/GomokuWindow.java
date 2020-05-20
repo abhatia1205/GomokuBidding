@@ -16,40 +16,49 @@ public class GomokuWindow extends JFrame
     // ----------------------------------------------------------------------
     // INSTANCE VARIABLE CONSTANTS
 
-    public static final int ROWS = 15; // ROWS by COLS cells
+    private static final int ROWS = 16; // ROWS by COLS cells
 
-    public static final int COLS = 15;
+    private static final int COLS = 16;
 
     // Named-constants of the various dimensions used for graphics drawing
-    public static final int CELL_SIZE = 50; // cell width and height (square)
+    private static final int CELL_SIZE = 50; // cell width and height (square)
 
-    public static final int CANVAS_WIDTH = CELL_SIZE * COLS; // the drawing
-                                                             // canvas
+    private static final int CANVAS_WIDTH = CELL_SIZE * COLS; // the drawing
+                                                              // canvas
 
-    public static final int CANVAS_HEIGHT = CELL_SIZE * ROWS;
+    private static final int CANVAS_HEIGHT = CELL_SIZE * ROWS;
 
-    public static final int GRID_WIDTH = 4; // Grid-line's width
+    private static final int GRID_WIDTH = 4; // Grid-line's width
 
-    public static final int GRID_WIDTH_HALF = GRID_WIDTH / 2; // Grid-line's
-                                                              // half-width
+    private static final int GRID_WIDTH_HALF = GRID_WIDTH / 2; // Grid-line's
+                                                               // half-width
 
     // Symbols (cross/nought) are displayed inside a cell, with padding from
     // border
-    public static final int CELL_PADDING = CELL_SIZE / 6;
+    private static final int CELL_PADDING = CELL_SIZE / 6;
 
-    public static final int SYMBOL_SIZE = CELL_SIZE - CELL_PADDING * 2; // width/height
-
-    public static final int SYMBOL_STROKE_WIDTH = 4; // pen's stroke width
+    // width/height
+    private static final int SYMBOL_SIZE = CELL_SIZE - CELL_PADDING * 2; 
+ 
+    private static final int SYMBOL_STROKE_WIDTH = 4; // pen's stroke width
 
     // ----------------------------------------------------------------------
     // INSTANCE VARIABLES for game play
 
     private GameState currentState; // the current game state
 
-    //private Cell currentPlayer; // the current player
+    public ArrayList<Player> players; // holds all the players
 
-    //private Cell[][] board; // Game board of ROWS-by-COLS cells
-    
+    private Player currentPlayer; // the current player (1 or 2)
+
+    private GomokuBoard board; // the board to play on
+
+    private int bidding; // 0 for not a bidding game, 1 for a bidding game
+
+    private int numPlayers; // 1 for 1 v ai; 2 for 1 v 1
+
+    public GamePiece[][] b; // 2D array of type GamePiece to hold information
+                            // on the pieces on the board
 
     // ----------------------------------------------------------------------
     // INSTANCE VARIABLES for graphics
@@ -57,13 +66,8 @@ public class GomokuWindow extends JFrame
     private DrawCanvas canvas; // Drawing canvas (JPanel) for the game board
 
     private JLabel statusBar; // Status Bar
-    
-    //TEST
-    public ArrayList<Player> players;
-    private Player currentPlayer;
-    private GomokuBoard board;
-    private boolean bidding;
-    public GamePiece[][] b;
+
+    private Container cp; // Container for the graphics
 
     // ----------------------------------------------------------------------
     // INNER CLASSES
@@ -76,32 +80,36 @@ public class GomokuWindow extends JFrame
     }
 
 
-    // Use an enumeration (inner class) to represent the markers in each cell
-    public enum Cell {
-        EMPTY, WH, BL
-    }
-
-
     // ----------------------------------------------------------------------
     // CONSTRUCTOR
 
-    public GomokuWindow()
+    public GomokuWindow( int bid, int num )
     {
         // ----------------------------------------
-        // First build all graphics components.
+        // Build all graphics components.
 
         canvas = new DrawCanvas(); // Construct a drawing canvas (a JPanel)
         canvas.setPreferredSize( new Dimension( CANVAS_WIDTH, CANVAS_HEIGHT ) );
-        
-        //set players
-        this.board = new GomokuBoard(15);
+
+        // set the instance variables according to the parameters
+        bidding = bid;
+        numPlayers = num;
+
+        // set players
+        this.board = new GomokuBoard( 15 );
         players = new ArrayList<Player>();
-        players.add(new ConsolePlayer("p1", "X", this.board, 0));
-        MmPlayer a = new MmPlayer("p2", "O", this.board);
-        a.setup( players.get( 0 ), 3 );
-        players.add( a );
-        bidding = false;
-        
+        players.add( new ConsolePlayer( "p1", "X", this.board, bid * 50 ) );
+        if ( numPlayers == 1 )// 1 player (1 v ai)
+        {
+            MmPlayer a = new MmPlayer( "p2", "O", this.board );
+            a.setup( players.get( 0 ), 3 );
+            players.add( a );
+        }
+        else // 2 player (1 v 1)
+        {
+            players.add( new ConsolePlayer( "p2", "O", this.board, bid * 50 ) );
+        }
+
         // The canvas (JPanel) fires a MouseEvent upon mouse-click
         canvas.addMouseListener( new MouseAdapter()
         {
@@ -110,13 +118,22 @@ public class GomokuWindow extends JFrame
             { // mouse-clicked handler
               // Get the x and y coordinates of the screen pixel that was
               // clicked.
-                int mouseX = e.getX();
-                int mouseY = e.getY();
+                int mouseX = e.getX() - 35;
+                int mouseY = e.getY() - 35;
+                if ( mouseX < 0 )
+                {
+                    mouseX = 0;
+                }
+                if ( mouseY < 0 )
+                {
+                    mouseY = 0;
+                }
                 // Convert the x,y screen coordinates to a row and column index.
                 int rowSelected = mouseY / CELL_SIZE;
                 int colSelected = mouseX / CELL_SIZE;
-                // Make the selected move and update the state of the game.
+
                 makeMoveOrRestart( rowSelected, colSelected );
+
                 // Refresh the drawing canvas by posting the repaint event,
                 // which signals
                 // the JPanel code to call its paintComponent method
@@ -131,32 +148,128 @@ public class GomokuWindow extends JFrame
 
         // Create a container for holding graphics components, and add the
         // canvas and status bar.
-        Container cp = getContentPane();
+        cp = getContentPane();
         cp.setLayout( new BorderLayout() );
         cp.add( canvas, BorderLayout.CENTER );
         cp.add( statusBar, BorderLayout.PAGE_END );
 
         setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
         pack(); // pack all the components in this JFrame
+        setBounds( 0,
+            0,
+            CELL_SIZE * ROWS + GRID_WIDTH * ROWS - 28,
+            CELL_SIZE * COLS + GRID_WIDTH * ROWS + 28 );
         setTitle( "Gomoku" );
         setVisible( true ); // show this JFrame
 
+        // set everything visible
+        canvas.setVisible( true );
+        statusBar.setVisible( true );
+        cp.setVisible( true );
+
         // ----------------------------------------
-        // Now define game components and initialize the game.
+        // Define game components and initialize the game.
 
         b = board.board(); // allocate array
         canvas.setB( b );
         currentPlayer = players.get( 0 );
         restartGame(); // initialize the game board contents and game variables
+
+        if ( bidding == 1 ) // If a bidding game, open the bid window
+        {
+            bidCallWindow();
+        }
     }
 
 
-    // Initialize the game-board contents and the status
+    /**
+     * Opens a bid window
+     */
+    public void bidCallWindow()
+    {
+        BidWindow bidWindow = new BidWindow( numPlayers, players );
+        bidWindow.open( this );
+    }
+
+
+    /**
+     * Switches the current player according to the bid amount
+     * 
+     * @param nextPlayer
+     *            either 1 or 2, which means player 1 or player 2, respectively
+     */
+    public void bidSwitchPlayer( int nextPlayer )
+    {
+        currentPlayer = null;
+        currentPlayer = ( nextPlayer == 1 ) ? players.get( 0 ) : 
+            players.get( 1 );
+
+        statusBar.setForeground( Color.BLACK ); // update the current player
+        if ( currentPlayer == players.get( 0 ) )// on the bottom of the screen
+        {
+            statusBar.setText( "White's Turn" );
+        }
+        else
+        {
+            statusBar.setText( "Black's Turn" );
+        }
+    }
+
+
+    /**
+     * If game is not a win or draw yet and this is a valid move, make the move
+     * and update the game state. Add code here to automatically make the
+     * opponent's move, if the currentState is still GameState.PLAYING
+     * 
+     * @param rowSelected
+     *            the row clicked on
+     * @param colSelected
+     *            the col clicked on
+     */
+    public void makeMoveOrRestart( int rowSelected, int colSelected )
+    {
+        if ( currentState == GameState.PLAYING )
+        {
+            Location loc = new Location( rowSelected, colSelected );
+            if ( board.locationValid( loc ) == true && 
+                            board.locationOccupied( loc ) == false )
+            {
+                GamePiece a = new GamePiece( currentPlayer, loc );
+                updateGameState( a, rowSelected, colSelected );
+                if ( bidding == 0 )
+                {
+                    switchPlayer();
+                    if ( numPlayers == 1 && currentPlayer == players.get( 1 ) )
+                    {
+                        aiMakeMove();
+                    }
+                }
+                else
+                {
+                    bidCallWindow();
+                    if ( numPlayers == 1 && currentPlayer == players.get( 1 ) )
+                    {
+                        aiMakeMove(); // FIX TO BE THE CORRECT AI PLAYER
+                    }
+                }
+
+            }
+        }
+        else
+        {            // game over
+            close(); // restart the game
+        }
+    }
+
+
+    /**
+     * Initialize the game-board contents and the status.
+     */
     public void restartGame()
     {
-        for ( int row = 0; row < ROWS; ++row )
+        for ( int row = 0; row < ROWS - 1; ++row )
         {
-            for ( int col = 0; col < COLS; ++col )
+            for ( int col = 0; col < COLS - 1; ++col )
             {
                 b[row][col] = null; // all cells empty
             }
@@ -166,58 +279,89 @@ public class GomokuWindow extends JFrame
     }
 
 
-    // If game is not a win or draw yet and this is a valid move, make the move
-    // and update the game state.
-    // Add code here to automatically make the opponent's move, if the
-    // currentState is still GameState.PLAYING
-    public void makeMoveOrRestart( int rowSelected, int colSelected )
+    /**
+     * Close the gomoku window, and re open the customization game window
+     */
+    private void close()
+    {
+        setVisible( false );
+        SwingUtilities.invokeLater( new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                new CustomWindow(); // Let the constructor do the job
+            }
+        } );
+    }
+
+
+    /**
+     * The AI player makes a move, or if the game is over, closes the window
+     */
+    public void aiMakeMove()
     {
         if ( currentState == GameState.PLAYING )
         {
-            Location loc = new Location( rowSelected, colSelected );
-            if ( board.locationValid(loc) == true && board.locationOccupied(loc) == false )
-            {
-                //Location loc = new Location( rowSelected, colSelected );
-                GamePiece a = new GamePiece(currentPlayer, loc);
-                updateGameState( a, rowSelected, colSelected );
-                switchPlayer();
-            }
+            MmPlayer ai = (MmPlayer)players.get( 1 );
+            Location next = ai.playTurn();
+            int row = next.row();
+            int col = next.col();
+            makeMoveOrRestart( row, col );
         }
         else
         { // game over
-            restartGame(); // restart the game
+            close(); // restart the game
         }
     }
 
-    // Make the move and update the state of the game.
-    public void updateGameState( GamePiece a, int rowSelected, int colSelected)
+
+    /**
+     * Make the move and update the state of the game.
+     * 
+     * @param a
+     *            the piece played (holds info on player and location)
+     * @param rowSelected
+     *            the row selected
+     * @param colSelected
+     *            the column selected
+     */
+    public void updateGameState( GamePiece a, int rowSelected, int colSelected )
     {
         b[rowSelected][colSelected] = a; // Make the move
-        if ( board.check4Win( a ) != null )
-        { // check for win
-            currentState = ( currentPlayer == players.get( 0 ) ) ? GameState.WH_WON : GameState.BL_WON;
+        if ( board.check4Win( a ) != null ) // check for win
+        {
+            currentState = ( currentPlayer == players.get( 0 ) ) ? 
+                GameState.WH_WON : GameState.BL_WON;
         }
-        else if ( isDraw() )
-        { // check for draw
+        else if ( isDraw() ) // check for draw
+        {
             currentState = GameState.DRAW;
         }
         // Otherwise, no change to current state (still GameState.PLAYING).
     }
 
 
-    // Change to next player
+    /**
+     * Change to the next player
+     */
     public void switchPlayer()
     {
-        currentPlayer = ( currentPlayer == players.get( 0 )) ? players.get( 1 ) : players.get( 0 );
+        currentPlayer = ( currentPlayer == players.get( 0 ) ) ? 
+            players.get( 1 ) : players.get( 0 );
     }
 
 
-    // Return true if it is a draw (i.e., no more empty cell)
+    /**
+     * Return true if it is a draw (i.e., no more empty cell)
+     * 
+     * @return true for draw, false for not a draw yet
+     */
     public boolean isDraw()
     {
-        for ( int row = 0; row < ROWS; ++row )
+        for ( int row = 0; row < ROWS - 1; ++row )
         {
-            for ( int col = 0; col < COLS; ++col )
+            for ( int col = 0; col < COLS - 1; ++col )
             {
                 if ( b[row][col] == null )
                 {
@@ -234,17 +378,25 @@ public class GomokuWindow extends JFrame
 
     class DrawCanvas extends JPanel
     {
-        
+
         private GamePiece[][] b;
-        
-        public void setB(GamePiece[][] a)
+
+
+        /**
+         * sets instance variable b to a
+         * 
+         * @param a
+         *            GamePiece array
+         */
+        public void setB( GamePiece[][] a )
         {
             b = a;
         }
-        
+
+
         @Override
-        public void paintComponent( Graphics g )
-        { // invoke via repaint()
+        public void paintComponent( Graphics g ) // invoke via repaint()
+        {
             super.paintComponent( g ); // fill background
             setBackground( Color.WHITE ); // set its background color
 
@@ -252,8 +404,8 @@ public class GomokuWindow extends JFrame
             g.setColor( Color.GRAY );
             for ( int row = 1; row < ROWS; ++row )
             {
-                g.fillRoundRect( 0,
-                    CELL_SIZE * row - GRID_WIDTH_HALF,
+                g.fillRoundRect( 10,
+                    CELL_SIZE * row - GRID_WIDTH_HALF + 10,
                     CANVAS_WIDTH - 1,
                     GRID_WIDTH,
                     GRID_WIDTH,
@@ -261,32 +413,81 @@ public class GomokuWindow extends JFrame
             }
             for ( int col = 1; col < COLS; ++col )
             {
-                g.fillRoundRect( CELL_SIZE * col
-                    - GRID_WIDTH_HALF, 0, GRID_WIDTH, CANVAS_HEIGHT - 1, GRID_WIDTH, GRID_WIDTH );
+                g.fillRoundRect( CELL_SIZE * col - GRID_WIDTH_HALF
+                    + 10, 10, GRID_WIDTH, CANVAS_HEIGHT - 1, 
+                    GRID_WIDTH, GRID_WIDTH );
             }
 
+            // Draw the border lines
+            g.setColor( Color.DARK_GRAY );
+            g.fillRoundRect( 0, // top line
+                0,
+                CANVAS_WIDTH - 1 + 20,
+                10,
+                GRID_WIDTH,
+                GRID_WIDTH );
+
+            g.fillRoundRect( 0, // bot line
+                CELL_SIZE * ROWS - GRID_WIDTH_HALF + 10,
+                CANVAS_WIDTH - 1 + 20,
+                10,
+                GRID_WIDTH,
+                GRID_WIDTH );
+
+            g.fillRoundRect( 0, // left line
+                0,
+                10,
+                CANVAS_HEIGHT - 1 + 20,
+                GRID_WIDTH,
+                GRID_WIDTH );
+
+            g.fillRoundRect( CELL_SIZE * COLS - GRID_WIDTH_HALF + 10, // right
+                0,                                                    // line
+                10,
+                CANVAS_HEIGHT - 1 + 20,
+                GRID_WIDTH,
+                GRID_WIDTH );
+
             // Draw the Marks of all the cells if they are not empty
+            // Draw the circles at each intersection
             // Use Graphics2D which allows us to set the pen's stroke
             Graphics2D g2d = (Graphics2D)g;
             g2d.setStroke( new BasicStroke( SYMBOL_STROKE_WIDTH,
                 BasicStroke.CAP_ROUND,
                 BasicStroke.JOIN_ROUND ) ); // Graphics2D only
-            for ( int row = 0; row < ROWS; ++row )
-            {
-                for ( int col = 0; col < COLS; ++col )
+
+            for ( int row = 1; row < ROWS; ++row ) // Draws circles at the
+            { // intersections
+                for ( int col = 1; col < COLS; ++col )
                 {
-                    int x1 = col * CELL_SIZE + CELL_PADDING;
-                    int y1 = row * CELL_SIZE + CELL_PADDING;
-                    if (b[row][col] != null)
+                    g2d.setColor( Color.GRAY );
+                    g2d.drawOval( CELL_SIZE * col - GRID_WIDTH_HALF + 7,
+                        CELL_SIZE * row - GRID_WIDTH_HALF + 7,
+                        10,
+                        10 );
+                    g2d.fillOval( CELL_SIZE * col - GRID_WIDTH_HALF + 7,
+                        CELL_SIZE * row - GRID_WIDTH_HALF + 7,
+                        10,
+                        10 );
+                }
+            }
+
+            for ( int row = 0; row < ROWS - 1; ++row ) // Draw the game pieces
+            {
+                for ( int col = 0; col < COLS - 1; ++col )
+                {
+                    int x1 = col * CELL_SIZE + CELL_PADDING + 35;
+                    int y1 = row * CELL_SIZE + CELL_PADDING + 35;
+                    if ( b[row][col] != null )
                     {
-                        if ( b[row][col].getPlayer() == players.get(0) )
+                        if ( b[row][col].getPlayer() == players.get( 0 ) )
                         {
                             g2d.setColor( Color.LIGHT_GRAY );
                             g2d.drawOval( x1, y1, SYMBOL_SIZE, SYMBOL_SIZE );
                             g2d.fillOval( x1, y1, SYMBOL_SIZE, SYMBOL_SIZE );
 
                         }
-                        else if ( b[row][col].getPlayer() == players.get(1) )
+                        else if ( b[row][col].getPlayer() == players.get( 1 ) )
                         {
                             g2d.setColor( Color.BLACK );
                             g2d.drawOval( x1, y1, SYMBOL_SIZE, SYMBOL_SIZE );
@@ -327,19 +528,4 @@ public class GomokuWindow extends JFrame
         }
     }
 
-    // ----------------------------------------------------------------------
-    // MAIN METHOD
-
-    public static void main( String[] args )
-    {
-        // Run GUI codes in the Event-Dispatching thread for thread safety
-        SwingUtilities.invokeLater( new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                new GomokuWindow(); // Let the constructor do the job
-            }
-        } );
-    }
 }
