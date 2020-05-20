@@ -23,7 +23,7 @@ public class MmEvaluator {
     }
 
     public int scoreHoriz(boolean myTurn){
-        GamePiece[][] b = board.board();
+        GamePiece[][] b = board.b();
         score = 0;
         for(int r = 0; r < b.length; r++){ 
             
@@ -41,7 +41,7 @@ public class MmEvaluator {
     }
 
     public int scoreVerti(boolean myTurn){
-        GamePiece[][] b = board.board();
+        GamePiece[][] b = board.b();
         score = 0;
         for(int c = 0; c < b.length; c++){ 
             count = 0;
@@ -58,7 +58,7 @@ public class MmEvaluator {
     }
 
     public int scoreBackDiag(boolean myTurn){
-        GamePiece[][] b = board.board();
+        GamePiece[][] b = board.b();
         score = 0;
         for(int col = 0; col < b.length; col++){
             count = 0;
@@ -94,7 +94,7 @@ public class MmEvaluator {
     }
 
     public int scoreDiag(boolean myTurn){           //not working for some reason :(
-        GamePiece[][] b = board.board();
+        GamePiece[][] b = board.b();
         score = 0;
         for(int col = 0; col < b.length; col++){
             count = 0;

@@ -1,21 +1,18 @@
 package gomokugame;
 
 public class GomokuBoard{
-    
-    public int width;
+
     private GamePiece[][] board;
 
     public GomokuBoard(){
-        this.width = 15;
-        this.board = new GamePiece[width][width];
+        this.board = new GamePiece[15][15];
     }
 
     public GomokuBoard(int width){
-        this.width = width;
         this.board = new GamePiece[width][width];
     }
 
-    public GamePiece[][] board(){
+    public GamePiece[][] b(){
         return board;
     }
 
@@ -24,10 +21,10 @@ public class GomokuBoard{
     }
 
     public boolean locationValid(Location l){
-        if(l.row() >= width || l.row() < 0){
+        if(l.row() >= board.length || l.row() < 0){
             return false;
         }
-        if(l.col() >= width || l.col() < 0){
+        if(l.col() >= board.length || l.col() < 0){
             return false;
         }
         return true;
