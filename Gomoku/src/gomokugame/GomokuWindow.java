@@ -115,9 +115,10 @@ public class GomokuWindow extends JFrame
         {
             @Override
             public void mouseClicked( MouseEvent e )
-            { // mouse-clicked handler
-              // Get the x and y coordinates of the screen pixel that was
-              // clicked.
+            {   
+                // mouse-clicked handler
+                // Get the x and y coordinates of the screen pixel that was
+                // clicked.
                 int mouseX = e.getX() - 35;
                 int mouseY = e.getY() - 35;
                 if ( mouseX < 0 )
@@ -133,11 +134,17 @@ public class GomokuWindow extends JFrame
                 int colSelected = mouseX / CELL_SIZE;
 
                 makeMoveOrRestart( rowSelected, colSelected );
-
+                
                 // Refresh the drawing canvas by posting the repaint event,
                 // which signals
                 // the JPanel code to call its paintComponent method
                 repaint();
+                
+                if ( numPlayers == 1 && currentPlayer == players.get( 1 ) )
+                {
+                    aiMakeMove();
+                    repaint();
+                }
             }
         } );
 
@@ -187,8 +194,15 @@ public class GomokuWindow extends JFrame
      */
     public void bidCallWindow()
     {
-        BidWindow bidWindow = new BidWindow( numPlayers, players );
-        bidWindow.open( this );
+        if ( currentState == GameState.PLAYING )
+        {
+            BidWindow bidWindow = new BidWindow( numPlayers, players );
+            bidWindow.open( this );
+        }
+        else
+        {
+            close();
+        }
     }
 
 
@@ -239,10 +253,6 @@ public class GomokuWindow extends JFrame
                 if ( bidding == 0 )
                 {
                     switchPlayer();
-                    if ( numPlayers == 1 && currentPlayer == players.get( 1 ) )
-                    {
-                        aiMakeMove();
-                    }
                 }
                 else
                 {
