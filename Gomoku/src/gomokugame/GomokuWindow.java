@@ -170,7 +170,7 @@ public class GomokuWindow extends JFrame
         // ----------------------------------------
         // Define game components and initialize the game.
 
-        b = board.board(); // allocate array
+        b = board.b(); // allocate array
         canvas.setB( b );
         currentPlayer = players.get( 0 );
         restartGame(); // initialize the game board contents and game variables
