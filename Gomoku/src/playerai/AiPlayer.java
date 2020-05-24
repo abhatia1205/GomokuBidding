@@ -2,13 +2,16 @@ package playerai;
 
 import gomokugame.*;
 
+
 public class AiPlayer extends Player {
     
-    private GamePiece[][][] aiBoard;
+    public int[][][] aiBoard;
+    public int[][] aiFlatBoard;
 
     public AiPlayer(String n, String s, GomokuBoard b){
         super(n,s,b);
-        aiBoard = new GamePiece[b.b().length][b.b().length][3];
+        aiBoard = new int[15][15][2];
+        aiFlatBoard = new int[1][450];
     }
 
     public AiPlayer(String n, String s, GomokuBoard b, int t){
@@ -22,11 +25,24 @@ public class AiPlayer extends Player {
             for(int c = 0; c < board.b().length; c++){
                 g = board.b()[r][c];
                 if(g != null){
-                    aiBoard[0][r][c] = g;
-                    if(g.getPlayer() == this)
-                        aiBoard[1][r][c] = g;
-                    else
-                        aiBoard[2][r][c] = g;
+                    if(g.getPlayer() == this){
+                        aiBoard[r][c][0] = 1;
+                        aiBoard[r][c][1] = 0;
+                    }
+                    else{
+                        aiBoard[r][c][0] = 0;
+                        aiBoard[r][c][1] = 1;
+                    }
+                }
+            }
+        }
+    }
+
+    public void flattenBoard(){
+        for(int r = 0; r < aiBoard.length; r++){
+            for(int c = 0; c < aiBoard[0].length; c++){
+                for(int d = 0; d < aiBoard[0][0].length; d++){
+                    aiFlatBoard[0][2*(15*r+c)+d] = aiBoard[r][c][d];
                 }
             }
         }
