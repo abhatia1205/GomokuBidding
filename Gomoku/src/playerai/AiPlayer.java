@@ -8,7 +8,7 @@ public class AiPlayer extends Player {
 
     private String folderPath;
     private final String out_File_Plath = "Gomoku/src/transferdata/cringer.txt";
-    private final String in_File_Path = "Gomoku/src/transferdata/cringer.txt";
+    private final String in_File_Path = "Gomoku/src/transferdata/didthecring.txt";
     private int[] lastMoveData;
 
     public AiPlayer(String n, String s, GomokuBoard b) {
@@ -49,7 +49,6 @@ public class AiPlayer extends Player {
 
     public void outputBoardFile() {
         File outputFile = new File(out_File_Plath);
-        System.out.println(outputFile.isFile());
         PrintWriter pw = null;
         try {
             pw = new PrintWriter(outputFile);
@@ -63,7 +62,6 @@ public class AiPlayer extends Player {
 
     public int[] neuralInput() {
         File inputFile = new File(in_File_Path);
-        System.out.println(inputFile.isFile());
         Scanner scan = null;
         while (scan == null) {
             try {
@@ -79,9 +77,13 @@ public class AiPlayer extends Player {
         for(int i : out){
             System.out.print(i);
         }
-        inputFile.delete();
+        scan.close();
+        boolean a = false;
+        while(! a){
+            a = inputFile.delete();
+        }
 
-        return null;
+        return out;
     }
 
 }
