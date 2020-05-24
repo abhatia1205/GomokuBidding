@@ -9,5 +9,6 @@ public class aiPlayertesting {
         AiPlayer a = new AiPlayer("p1", "X", b);
         b.placePiece(new GamePiece(a, new Location(3,4)));
         a.outputBoardFile();
+        a.neuralInput();
     }
 }
