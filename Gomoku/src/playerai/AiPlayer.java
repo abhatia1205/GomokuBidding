@@ -7,6 +7,9 @@ public class AiPlayer extends Player {
     
     public int[][][] aiBoard;
     public int[][] aiFlatBoard;
+    public String folderPath;
+    public final String createdFile = "cringer.txt";
+    public final String readFile = "didTheCring.txt";
 
     public AiPlayer(String n, String s, GomokuBoard b){
         super(n,s,b);
