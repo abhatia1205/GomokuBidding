@@ -6,10 +6,11 @@ import java.util.*;
 
 public class AiPlayer extends Player {
 
-    private String folderPath;
     private final String out_File_Plath = "Gomoku/src/transferdata/cringer.txt";
-    private final String in_File_Path = "Gomoku/src/transferdata/didthecring.txt";
-    private int[] lastMoveData;
+    private final String in_File_Path = "Gomoku/src/transferdata/didthecringe.txt";
+    private int[] nextMoveData;
+
+    private Player opponent;
 
     public AiPlayer(String n, String s, GomokuBoard b) {
         super(n, s, b);
@@ -20,12 +21,18 @@ public class AiPlayer extends Player {
         tokens = t;
     }
 
+    public void setup(Player opp){
+        this.opponent = opp;
+    }
+
     public int bid() {
-        return lastMoveData[0];
+        outputBoardFile();
+        this.nextMoveData = neuralInput();
+        return nextMoveData[0];
     }
 
     public Location playTurn() {
-        return new Location(lastMoveData[1], lastMoveData[2]);
+        return new Location(nextMoveData[1], nextMoveData[2]);
     }
 
     private String board2String() {
@@ -44,6 +51,7 @@ public class AiPlayer extends Player {
             }
             s += "\n";
         }
+        s += "" + this.getTokens() + " " + opponent.getTokens();
         return s;
     }
 
@@ -53,7 +61,7 @@ public class AiPlayer extends Player {
         try {
             pw = new PrintWriter(outputFile);
         } catch (FileNotFoundException e) {
-            System.out.println("fileNotFound");
+            System.out.println("error in cinger.txt file creation");
             return;
         }
         pw.write(board2String());
