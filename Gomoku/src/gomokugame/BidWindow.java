@@ -6,7 +6,7 @@ import java.util.ArrayList;
 
 import javax.swing.*;
 import javax.swing.border.*;
-
+import playerai.*;
 
 public class BidWindow extends JFrame
 {
@@ -161,11 +161,12 @@ public class BidWindow extends JFrame
             makeMove( (int)numOne );
         }
         
+
         private void makeMove( int num1 )
         {
             if ( players.get( 0 ).validBid( num1 ) )
             {
-                int num2 = players.get( 1 ).bid();
+                int num2 = ( (AiPlayer)players.get( 1 ) ).bid();
                 if ( num1 > num2 )
                 {
                     nextPlayer = 1;
