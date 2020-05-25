@@ -126,7 +126,7 @@ def train(games):
 	a1.model.save("gomoku_predictor.h5")
 	a1.bet_model.save("gomoku_better.h5")
 
-train(2)
+train(20)
 
 
 
