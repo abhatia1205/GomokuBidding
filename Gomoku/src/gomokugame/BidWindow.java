@@ -8,11 +8,20 @@ import javax.swing.*;
 import javax.swing.border.*;
 import playerai.*;
 
+
+/**
+ * This is a GUI front end for Gomoku, and will collect the data of the player’s
+ * bet choices for the game. It creates the a panel for users to input their
+ * bets.
+ *
+ * @author Angela
+ * @author Assignment: Gomoku Final Project
+ */
 public class BidWindow extends JFrame
 {
     // ----------------------------------------------------------------------
     // INSTANCE VARIABLES for graphics
-    
+
     // Buttons:
     private JButton playBtn;
 
@@ -31,18 +40,25 @@ public class BidWindow extends JFrame
     private Container c;
 
     private static JFrame thisWindow;
-    
+
     private GomokuWindow returnWindow;
 
     // ----------------------------------------------------------------------
     // INSTANCE VARIABLES for game play
-    
+
     private int numPlayers;
 
     private int nextPlayer;
 
     private ArrayList<Player> players;
 
+
+    /**
+     * @param numPl
+     *            the number of Players
+     * @param player
+     *            an array of the players
+     */
     public BidWindow( int numPl, ArrayList<Player> player )
     {
         super( "Bid!" );
@@ -54,11 +70,10 @@ public class BidWindow extends JFrame
 
         askAmount = new JLabel(
             "Bid Player 1 (White) (Remaining: " + 
-            players.get( 0 ).getTokens() + " )",
-            JLabel.RIGHT );
+                            players.get( 0 ).getTokens() + " )", JLabel.RIGHT );
         askAmount2 = new JLabel(
             "Bid Player 2 (Black) (Remaining: " + 
-            players.get( 1 ).getTokens() + " )",
+                            players.get( 1 ).getTokens() + " )",
             JLabel.RIGHT );
         playBtn = new JButton( "Bet" );
         PlayListener playListener = new PlayListener();
@@ -75,12 +90,23 @@ public class BidWindow extends JFrame
     }
 
 
+    /**
+     * Returns the number of the next player
+     * 
+     * @return the next player
+     */
     public int nextPlayer()
     {
         return nextPlayer;
     }
 
 
+    /**
+     * Open the window and make it visible
+     * 
+     * @param win
+     *            the gomoku window information
+     */
     public void open( GomokuWindow win )
     {
         setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
@@ -90,6 +116,9 @@ public class BidWindow extends JFrame
     }
 
 
+    /**
+     * Sets up the window for one player (one input)
+     */
     private void onePlayerSetUp()
     {
         oneF = new JTextField( 3 );
@@ -108,6 +137,9 @@ public class BidWindow extends JFrame
     }
 
 
+    /**
+     * Sets up the window for two players (two inputs).
+     */
     private void twoPlayerSetUp()
     {
         oneF = new JTextField( 3 );
@@ -129,11 +161,22 @@ public class BidWindow extends JFrame
     }
 
 
+    /**
+     * Creates a listener for action for the button in order to check the number
+     * inputed into the field of the window
+     *
+     * @author Angela
+     * @version May 24, 2020
+     * @author Period: 5
+     * @author Assignment: Gomoku Final Project
+     *
+     * @author Sources: 5
+     */
     private class PlayListener implements ActionListener
     {
         public void actionPerformed( ActionEvent r )
         {
-            if (numPlayers == 1)
+            if ( numPlayers == 1 )
             {
                 oneAction();
             }
@@ -143,6 +186,10 @@ public class BidWindow extends JFrame
             }
         }
 
+
+        /**
+         * Checks the one number inputed to make sure it is valid
+         */
         private void oneAction()
         {
             String amountOne = oneF.getText().trim();
@@ -160,8 +207,14 @@ public class BidWindow extends JFrame
 
             makeMove( (int)numOne );
         }
-        
 
+
+        /**
+         * Makes the move for one player, using the bid from the AI
+         * 
+         * @param num1
+         *            the number inputed by the user
+         */
         private void makeMove( int num1 )
         {
             if ( players.get( 0 ).validBid( num1 ) )
@@ -198,7 +251,11 @@ public class BidWindow extends JFrame
                     JOptionPane.ERROR_MESSAGE );
             }
         }
-        
+
+
+        /**
+         * Checks the two numbers inputed by the users
+         */
         private void twoAction()
         {
             String amountOne = oneF.getText().trim();
@@ -227,7 +284,11 @@ public class BidWindow extends JFrame
 
             makeMoveTwo( (int)numOne, (int)numTwo );
         }
-        
+
+
+        /**
+         * Displays a pop up message if the info entered is not a valid number
+         */
         private void notInt()
         {
             JOptionPane.showMessageDialog( thisWindow,
@@ -237,7 +298,15 @@ public class BidWindow extends JFrame
         }
 
 
-        private void makeMoveTwo ( int num1, int num2 )
+        /**
+         * Checks the two numbers inputed and decides which one is larger
+         * 
+         * @param num1
+         *            the first number inputed
+         * @param num2
+         *            the second number inputed
+         */
+        private void makeMoveTwo( int num1, int num2 )
         {
             if ( players.get( 0 ).validBid( num1 ) && 
                             players.get( 1 ).validBid( num2 ) )
@@ -275,6 +344,9 @@ public class BidWindow extends JFrame
         }
 
 
+        /**
+         * Close the bid window
+         */
         private void close()
         {
             c.setVisible( false );
@@ -283,14 +355,4 @@ public class BidWindow extends JFrame
             returnWindow.bidSwitchPlayer( nextPlayer );
         }
     }
-
-
-    public void main( int numPl, ArrayList<Player> player )
-    {
-        BidWindow window = new BidWindow( numPl, player );
-        window.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
-        window.setBounds( 0, 0, 360, 140 );
-        window.setVisible( true );
-    }
-
 }

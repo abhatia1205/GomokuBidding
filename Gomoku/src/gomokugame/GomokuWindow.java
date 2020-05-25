@@ -10,6 +10,19 @@ import java.util.ArrayList;
 import java.util.Random;
 import playerai.*;
 
+
+/**
+ * This is a GUI front end for Gomoku, and will collect the data of the player’s
+ * choices for the game. It creates the 15 x 15 board and the black and white
+ * pieces placed, and will keep track of what the user inputs.
+ *
+ * @author Angela
+ * @version May 24, 2020
+ * @author Period: 5
+ * @author Assignment: Gomoku Final Project
+ *
+ * @author Sources: none
+ */
 public class GomokuWindow extends JFrame
 {
 
@@ -73,8 +86,12 @@ public class GomokuWindow extends JFrame
     // INNER CLASSES
 
 
-    // Use an enumeration (inner class) to represent the various states of the
-    // game.
+    /**
+     * Use an enumeration (inner class) to represent the various states of the
+     * game.
+     * 
+     * @author Angela
+     */
     public enum GameState {
         PLAYING, DRAW, WH_WON, BL_WON
     }
@@ -83,6 +100,10 @@ public class GomokuWindow extends JFrame
     // ----------------------------------------------------------------------
     // CONSTRUCTOR
 
+    /**
+     * @param bid 0 for regular game; 1 for bid game
+     * @param num 1 for one player; 2 for 2 player
+     */
     public GomokuWindow( int bid, int num )
     {
         // ----------------------------------------
@@ -394,6 +415,17 @@ public class GomokuWindow extends JFrame
     // ----------------------------------------------------------------------
     // INNER CLASS for performing graphics
 
+    /**
+     * Creates the canvas to draw on, and does all the drawing, for the gomoku
+     * window
+     *
+     * @author Angela
+     * @version May 24, 2020
+     * @author Period: 5
+     * @author Assignment: Gomoku Final Project
+     *
+     * @author Sources: none
+     */
     class DrawCanvas extends JPanel
     {
 
