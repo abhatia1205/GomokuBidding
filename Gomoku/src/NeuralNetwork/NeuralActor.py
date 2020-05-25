@@ -20,6 +20,7 @@ class NeuralActor():
 		self.id = i
 		self.opponent = 1
 		self.prevQ = -1
+		self.prevBetQ = -1
 		self.prevAction = 0
 		self.prevBet = -1
 		self.bet_model.compile(optimizer = 'sgd', loss = 'mse')
@@ -35,8 +36,14 @@ class NeuralActor():
 	def setPrevQ(self, q):
 		self.prevQ = q
 
+	def setPrevBetQ(self, q):
+		self.prevBetQ = q
+
 	def getPrevQ(self):
 		return self.prevQ
+
+	def getPrevBetQ(self):
+		return self.prevBetQ
 
 	def setPrevAction(self, action):
 		self.prevAction = action
@@ -100,6 +107,8 @@ class NeuralActor():
 		return x
 
 	def bet(self, state, bet):
+		print("State is: ", state)
+		print("Bet before prediction is: ", bet)
 		x = self.bet_model.predict([state.reshape(1,1, 450), np.asarray(bet).reshape(1,1,2)])
 		print("Bet qvals are: ", x)
 		print("Bet shape is: ", x.shape)

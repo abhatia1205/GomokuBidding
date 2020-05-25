@@ -44,8 +44,8 @@ def train(games):
 			bet_qvals = [qvals1, qvals2]
 			bets = [0, 0]
 			if(random.random() < 0.1):
-				bets[0] = random.random()*betState[0]//1
-				bets[1] = random.random()*betState[1]//1
+				bets[0] = int(random.random()*betState[0])
+				bets[1] = int(random.random()*betState[1])
 			else:
 				bets[0] = np.argmax(np.array(qvals1)[:betState[0]+1])
 				bets[1] = np.argmax(np.array(qvals2)[:betState[1]+1])
@@ -91,7 +91,11 @@ def train(games):
 			agent.bet_fit(x_train, x_train_bet, y_train, batchsize = 32)
 
 
-			if(labels[1-agent.id] != False):
+			if(not isinstance(labels[1-agent.id], bool)):
+				print("""ENTERED WIN LOOP -------------------------------------------------------------------------------------------------
+					-----------------------------------------------------------------------------------------------------------------------
+					========================================================================================================================
+					------------------------------------------------------------------------------------------------------------------------""")
 				temp_exp, x_train, y_train = check_exp(agent_exps[1 - agent.id], prevState.reshape(1, 2*width**2), labels[1 - agent.id])
 				agents[1-agent.id].fit(x_train, y_train, batchsize = 32)
 				agent_exps[1 - agent.id] = temp_exp
@@ -102,13 +106,14 @@ def train(games):
 				agents[1-agent.id].bet_fit(x_train, x_train_bet, y_train, batchsize = 32)
 
 			agent.setPrevQ(qval)
+			agent.setPrevBetQ(bet_labels[agent.id])
 			agent.setPrevAction(action)
 			agent.setPrevBet(bets[agent.id])
 			agent.getOpponent().setPrevBet(bets[1 - agent.id])
 			prevState = state
 			state, available = new_state, new_available
 
-			if(winGame(state) or fullGrid(available)):
+			if(winGame(state[:,:,0]) or winGame(state[:,:,1]) or fullGrid(available)):
 				break
 
 				
@@ -118,6 +123,8 @@ def train(games):
 
 
 				# train
+	a1.model.save("gomoku_predictor.h5")
+	a1.bet_model.save("gomoku_better.h5")
 
 train(2)
 

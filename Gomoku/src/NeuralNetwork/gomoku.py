@@ -121,7 +121,7 @@ def compute_label(maxQval, qvals, action, rewards, agent, won):
 		newVals[0][index] = rewards[agent.id]
 		labels[agent.id] = newVals
 		newVals = agent.getOpponent().getPrevQ()
-		action = self.getPrevAction()
+		action = agent.getOpponent().getPrevAction()
 		index = action[0]*15 + action[1]
 		newVals[0][index] = rewards[1 - agent.id]
 		labels[1 - agent.id] = newVals
@@ -150,11 +150,12 @@ def computeBetQ( state, money, available, agent):
 	elif(money[1 - agent.id] < 10*money[agent.id]):
 		add_on += 500
 
-	return add_on + 0.75*myQval - 0.4*opponentQval + 0.1*nextQval
+	return (add_on + 200*myQval - 100*opponentQval + 50*nextQval)/750
 
 def compute_bet_label(label, qvals, bet, agent, won):
 	labels = [False, False]
 	print("Label is: ", label)
+	print("Bet is: ", bet)
 	print("Newest bug about betting:" , bet)
 	if not won:
 		newVals = qvals
@@ -162,14 +163,14 @@ def compute_bet_label(label, qvals, bet, agent, won):
 		labels[agent.id] = newVals
 	else:
 		newVals = qvals
-		newVals[bet] = 1000
+		newVals[bet] = 10
 		labels[agent.id] = newVals
-		newVals = agent.getOpponent().getPrevQ()
-		if(newVals != -1):
-			index = self.getPrevBet()
-			newVals[index] = rewards[1 - agent.id]
+		newVals = agent.getOpponent().getPrevBetQ()
+		if(not isinstance(newVals, int)):
+			index = agent.getOpponent().getPrevBet()
+			newVals[index] = -10
 			labels[1 - agent.id] = newVals
-
+	print("The bet labels are: ", labels)
 	return labels
 
 def check_exp(experiences, state, label, batch = 32):
@@ -189,12 +190,14 @@ def check_exp_bet(experiences, state, bets, label, batch = 32):
 	bets = np.asarray(bets).reshape((1,2))
 	if(len(experiences) < batch):
 		array = exp
-		array.append((state, bets, label))
+		array.append((state, bets, label.reshape((1,100))))
 	else:
 		array = random.sample(experiences, batch-1)
-		array.append((state, bets, label))
+		array.append((state, bets, label.reshape((1,100))))
 		if(len(exp) >= 200):
-			exp.pop(0).append((state, bets, label))
+			exp.pop(0)
+	print("Labels for exp are: ", np.asarray([i[2] for i in array]))
+	print(np.asarray([i[2] for i in array]).shape)
 	return exp, np.asarray([i[0] for i in array]), np.asarray([i[1] for i in array]), np.asarray([i[2] for i in array])
 
 
