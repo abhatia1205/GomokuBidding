@@ -8,7 +8,7 @@ import minimax.MmPlayer;
 
 import java.util.ArrayList;
 import java.util.Random;
-
+import playerai.*;
 
 public class GomokuWindow extends JFrame
 {
@@ -99,11 +99,16 @@ public class GomokuWindow extends JFrame
         this.board = new GomokuBoard( 15 );
         players = new ArrayList<Player>();
         players.add( new ConsolePlayer( "p1", "X", this.board, bid * 50 ) );
-        if ( numPlayers == 1 )// 1 player (1 v ai)
+        if ( numPlayers == 1 && bidding == 0 )// 1 player (1 v ai) and no bid
         {
             MmPlayer a = new MmPlayer( "p2", "O", this.board );
             a.setup( players.get( 0 ), 3 );
             players.add( a );
+        }
+        else if (numPlayers == 1 && bidding == 1) // 1 player (1 v ai) with bid
+        {
+            AiPlayer a = new AiPlayer("p2", "O", this.board, bid* 50);
+            players.add(a);
         }
         else // 2 player (1 v 1)
         {
@@ -140,7 +145,7 @@ public class GomokuWindow extends JFrame
                 // the JPanel code to call its paintComponent method
                 repaint();
                 
-                if ( numPlayers == 1 && currentPlayer == players.get( 1 ) )
+                if ( numPlayers == 1 && currentPlayer == players.get( 1 ) && bidding == 0)
                 {
                     aiMakeMove();
                     repaint();
@@ -256,11 +261,8 @@ public class GomokuWindow extends JFrame
                 }
                 else
                 {
+                    repaint();
                     bidCallWindow();
-                    if ( numPlayers == 1 && currentPlayer == players.get( 1 ) )
-                    {
-                        aiMakeMove(); // FIX TO BE THE CORRECT AI PLAYER
-                    }
                 }
 
             }
@@ -409,7 +411,7 @@ public class GomokuWindow extends JFrame
         {
             super.paintComponent( g ); // fill background
             setBackground( Color.WHITE ); // set its background color
-
+            
             // Draw the grid-lines
             g.setColor( Color.GRAY );
             for ( int row = 1; row < ROWS; ++row )
