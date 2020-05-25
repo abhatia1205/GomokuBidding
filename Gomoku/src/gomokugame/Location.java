@@ -1,36 +1,90 @@
 package gomokugame;
 
-public class Location{
+/**
+ * represents a location on the board
+ *
+ * @author ndevr
+ * @version May 24, 2020
+ * @author Period: 4
+ * @author Assignment: src
+ *
+ * @author Sources: asdfe
+ */
+public class Location
+{
 
     public int row;
+
     public int col;
 
-    public Location(){
+
+    /**
+     * makes new invalid location
+     */
+    public Location()
+    {
         row = -1;
         col = -1;
     }
 
-    public Location(int r, int c){
+
+    /**
+     * @param r
+     *            the row of piece
+     * @param c
+     *            the col
+     */
+    public Location( int r, int c )
+    {
         row = r;
         col = c;
     }
 
-    public int row(){
+
+    /**
+     * gets the piece's row location
+     * 
+     * @return the row
+     */
+    public int row()
+    {
         return row;
     }
 
-    public int col(){
+
+    /**
+     * gets the piece's col location
+     * 
+     * @return the col
+     */
+    public int col()
+    {
         return col;
     }
 
-    public void set(int r, int c){
+
+    /**
+     * resets the peice location
+     * 
+     * @param r
+     *            row
+     * @param c
+     *            col
+     */
+    public void set( int r, int c )
+    {
         row = r;
         col = c;
     }
 
-    public String toString(){
+
+    /**
+     * prints out the location in (r, c) format
+     */
+    public String toString()
+    {
         String s = "(" + row + ", " + col + ")";
         return s;
     }
-    
+
 }
