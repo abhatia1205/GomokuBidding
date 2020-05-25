@@ -6,6 +6,18 @@ import javax.swing.*;
 import javax.swing.border.*;
 
 
+/**
+ * This is a GUI front end for Gomoku, and will collect the data of the player’s
+ * choices for how the game should run. It creates a panel for users to choose
+ * the number of players and whether it will be a bidding game or not
+ *
+ * @author Angela
+ * @version May 24, 2020
+ * @author Period: 5
+ * @author Assignment: Gomoku Final Project
+ *
+ * @author Sources: none
+ */
 public class CustomWindow extends JFrame
 {
     // ----------------------------------------------------------------------
@@ -106,6 +118,16 @@ public class CustomWindow extends JFrame
     }
 
 
+    /**
+     * Creates a listener for the one player button
+     *
+     * @author Angela
+     * @version May 24, 2020
+     * @author Period: 5
+     * @author Assignment: Gomoku Final
+     *
+     * @author Sources: none
+     */
     private class OneListener implements ActionListener
     {
         public void actionPerformed( ActionEvent r )
@@ -117,6 +139,16 @@ public class CustomWindow extends JFrame
     }
 
 
+    /**
+     * Creates a listener for the two player button
+     *
+     * @author Angela
+     * @version May 24, 2020
+     * @author Period: 5
+     * @author Assignment: Gomoku Final
+     *
+     * @author Sources: none
+     */
     private class TwoListener implements ActionListener
     {
         public void actionPerformed( ActionEvent r )
@@ -128,6 +160,16 @@ public class CustomWindow extends JFrame
     }
 
 
+    /**
+     * Creates a listener for the bid button
+     *
+     * @author Angela
+     * @version May 24, 2020
+     * @author Period: 5
+     * @author Assignment: Gomoku Final
+     *
+     * @author Sources: none
+     */
     private class BidListener implements ActionListener
     {
         public void actionPerformed( ActionEvent r )
@@ -139,6 +181,16 @@ public class CustomWindow extends JFrame
     }
 
 
+    /**
+     * Creates a listener for the not bid button
+     *
+     * @author Angela
+     * @version May 24, 2020
+     * @author Period: 5
+     * @author Assignment: Gomoku Final
+     *
+     * @author Sources: none
+     */
     private class RegListener implements ActionListener
     {
         public void actionPerformed( ActionEvent r )
@@ -150,6 +202,16 @@ public class CustomWindow extends JFrame
     }
 
 
+    /**
+     * Creates a listener for the play button
+     *
+     * @author Angela
+     * @version May 24, 2020
+     * @author Period: 5
+     * @author Assignment: Gomoku Final
+     *
+     * @author Sources: none
+     */
     private class PlayListener implements ActionListener
     {
         public void actionPerformed( ActionEvent r )
@@ -176,6 +238,9 @@ public class CustomWindow extends JFrame
         }
 
 
+        /**
+         * Display a warning if the user did not choose all the buttons needed
+         */
         private void complete()
         {
             JOptionPane.showMessageDialog( thisWindow,
@@ -186,6 +251,16 @@ public class CustomWindow extends JFrame
     }
 
 
+    /**
+     * Creates a listener for the close button
+     *
+     * @author Angela
+     * @version May 24, 2020
+     * @author Period: 5
+     * @author Assignment: Gomoku Final
+     *
+     * @author Sources: none
+     */
     private class CloseListener implements ActionListener
     {
         public void actionPerformed( ActionEvent r )
@@ -197,6 +272,12 @@ public class CustomWindow extends JFrame
     }
 
 
+    /**
+     * Main method, opens the window for the custom window
+     * 
+     * @param args
+     *            args
+     */
     public static void main( String[] args )
     {
         CustomWindow window = new CustomWindow();
