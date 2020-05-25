@@ -86,8 +86,12 @@ public class GomokuWindow extends JFrame
     // INNER CLASSES
 
 
-    // Use an enumeration (inner class) to represent the various states of the
-    // game.
+    /**
+     * Use an enumeration (inner class) to represent the various states of the
+     * game.
+     * 
+     * @author Angela
+     */
     public enum GameState {
         PLAYING, DRAW, WH_WON, BL_WON
     }
@@ -96,6 +100,10 @@ public class GomokuWindow extends JFrame
     // ----------------------------------------------------------------------
     // CONSTRUCTOR
 
+    /**
+     * @param bid 0 for regular game; 1 for bid game
+     * @param num 1 for one player; 2 for 2 player
+     */
     public GomokuWindow( int bid, int num )
     {
         // ----------------------------------------
