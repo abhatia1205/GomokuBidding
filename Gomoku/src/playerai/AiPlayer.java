@@ -6,8 +6,8 @@ import java.util.*;
 
 public class AiPlayer extends Player {
 
-    private final String out_File_Plath = "Gomoku/src/transferdata/cringer.txt";
-    private final String in_File_Path = "Gomoku/src/transferdata/didthecringe.txt";
+    private final String out_File_Plath = "/home/anant/eclipse-workspace/GomokuBidding/Gomoku/src/transferdata/cringer.txt";
+    private final String in_File_Path = "/home/anant/eclipse-workspace/GomokuBidding/Gomoku/src/transferdata/didthecringe.txt";
     private int[] nextMoveData;
 
     private Player opponent;
