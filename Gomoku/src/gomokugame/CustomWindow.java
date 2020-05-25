@@ -12,11 +12,7 @@ import javax.swing.border.*;
  * the number of players and whether it will be a bidding game or not
  *
  * @author Angela
- * @version May 24, 2020
- * @author Period: 5
  * @author Assignment: Gomoku Final Project
- *
- * @author Sources: none
  */
 public class CustomWindow extends JFrame
 {
