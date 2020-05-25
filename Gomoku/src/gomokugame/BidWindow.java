@@ -133,6 +133,73 @@ public class BidWindow extends JFrame
     {
         public void actionPerformed( ActionEvent r )
         {
+            if (numPlayers == 1)
+            {
+                oneAction();
+            }
+            else
+            {
+                twoAction();
+            }
+        }
+
+        private void oneAction()
+        {
+            String amountOne = oneF.getText().trim();
+
+            Integer numOne = null;
+
+            try
+            {
+                numOne = Integer.parseInt( amountOne );
+            }
+            catch ( NumberFormatException e )
+            {
+                notInt();
+            }
+
+            makeMove( (int)numOne );
+        }
+        
+        private void makeMove( int num1 )
+        {
+            if ( players.get( 0 ).validBid( num1 ) )
+            {
+                int num2 = players.get( 1 ).bid();
+                if ( num1 > num2 )
+                {
+                    nextPlayer = 1;
+                    players.get( 1 ).addTokens( num1 );
+                    players.get( 0 ).subTokens( num1 );
+                    close();
+                }
+
+                else if ( num2 > num1 )
+                {
+                    players.get( 0 ).addTokens( num1 );
+                    players.get( 1 ).subTokens( num1 );
+                    nextPlayer = 2;
+                    close();
+                }
+                else
+                {
+                    JOptionPane.showMessageDialog( thisWindow,
+                        "Bid amounts were the same",
+                        "Bid failed",
+                        JOptionPane.ERROR_MESSAGE );
+                }
+            }
+            else
+            {
+                JOptionPane.showMessageDialog( thisWindow,
+                    "Bid number not valid",
+                    "Bid failed",
+                    JOptionPane.ERROR_MESSAGE );
+            }
+        }
+        
+        private void twoAction()
+        {
             String amountOne = oneF.getText().trim();
             String amountTwo = twoF.getText().trim();
 
@@ -157,10 +224,9 @@ public class BidWindow extends JFrame
                 notInt();
             }
 
-            makeMove( (int)numOne, (int)numTwo );
+            makeMoveTwo( (int)numOne, (int)numTwo );
         }
-
-
+        
         private void notInt()
         {
             JOptionPane.showMessageDialog( thisWindow,
@@ -170,7 +236,7 @@ public class BidWindow extends JFrame
         }
 
 
-        private void makeMove( int num1, int num2 )
+        private void makeMoveTwo ( int num1, int num2 )
         {
             if ( players.get( 0 ).validBid( num1 ) && 
                             players.get( 1 ).validBid( num2 ) )
