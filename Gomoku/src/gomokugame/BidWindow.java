@@ -15,11 +15,7 @@ import playerai.*;
  * bets.
  *
  * @author Angela
- * @version May 24, 2020
- * @author Period: 5
  * @author Assignment: Gomoku Final Project
- *
- * @author Sources: none
  */
 public class BidWindow extends JFrame
 {
