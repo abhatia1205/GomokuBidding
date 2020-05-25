@@ -232,6 +232,12 @@ public class GomokuWindow extends JFrame
         {
             statusBar.setText( "Black's Turn" );
         }
+        if ( numPlayers == 1 && currentPlayer == players.get( 1 ) )
+        {
+            Location loc = ( (AiPlayer)players.get( 1 ) ).playTurn();
+            System.out.println( loc.row() + " row/col " + loc.col() );
+            makeMoveOrRestart( loc.row(), loc.col() );
+        }
     }
 
 
