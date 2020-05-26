@@ -9,6 +9,7 @@ from keras.layers import Flatten
 from keras.layers import Input
 from keras.models import Model
 from keras.layers import concatenate
+from keras.layers.advanced_activations import LeakyReLU
 import numpy as np
 
 class NeuralActor():
@@ -23,8 +24,8 @@ class NeuralActor():
 		self.prevBetQ = -1
 		self.prevAction = 0
 		self.prevBet = -1
-		self.bet_model.compile(optimizer = 'sgd', loss = 'mse')
-		self.model.compile(optimizer = 'sgd', loss = 'mse')
+		self.bet_model.compile(optimizer = 'rmsprop', loss = 'mse')
+		self.model.compile(optimizer = 'rmsprop', loss = 'mse')
 		self.bet_model.summary()
 
 	def setOpponent(self, opponent):
@@ -60,12 +61,15 @@ class NeuralActor():
 	def makemodel(self):
 		model = Sequential()
 
-		model.add(Dense(225, activation='relu', input_shape = (1, 2*15**2)))
+		model.add(Dense(225, input_shape = (1, 2*15**2)))
+		model.add(LeakyReLU(alpha=0.1))
 		model.add(BatchNormalization())
 		model.add(Dropout(0.2))
 		model.add(Dense(225))
+		model.add(LeakyReLU(alpha=0.1))
 		model.add(BatchNormalization())
-		model.add(Dense(15**2))
+		model.add(Dropout(0.2))
+		model.add(Dense(15**2, activation = 'sigmoid'))
 
 		return model
 
@@ -75,6 +79,8 @@ class NeuralActor():
 		inputB = Input(shape=(1,2), name = 'bets')
 		# the first branch operates on the first input
 		x = Dense(225, activation="relu")(inputA)
+		x = LeakyReLU(alpha=0.1)(x)
+		x = BatchNormalization()(x)
 		x = Dense(10)(x)
 		x = Model(inputs=inputA, outputs=x)
 		# the second branch opreates on the second input
@@ -85,7 +91,12 @@ class NeuralActor():
 		# apply a FC layer and then a regression prediction on the
 		# combined outputs
 		z = Dense(225, activation="relu")(combined)
-		z = Dense(100)(z)
+		z = LeakyReLU(alpha=0.1)(z)
+		z = BatchNormalization()(z)
+		z = Dense(150, activation="relu")(combined)
+		z = LeakyReLU(alpha=0.1)(z)
+		z = BatchNormalization()(z)
+		z = Dense(100, activation = 'sigmoid') (z)
 		# our model will accept the inputs of the two branches and
 		# then output a single value
 		model = Model(inputs=[x.input, y.input], outputs=z)

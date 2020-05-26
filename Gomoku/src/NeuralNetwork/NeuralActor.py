@@ -9,10 +9,12 @@ from keras.layers import Flatten
 from keras.layers import Input
 from keras.models import Model
 from keras.layers import concatenate
+from keras.layers.advanced_activations import LeakyReLU
 import numpy as np
 
 class NeuralActor():
 
+#""" Initializes a NeuralActor to train the models. Contains all the logic for training"""
 	def __init__(self, i, money = 50):
 		self.money = money
 		self.model = self.makemodel()
@@ -23,9 +25,11 @@ class NeuralActor():
 		self.prevBetQ = -1
 		self.prevAction = 0
 		self.prevBet = -1
-		self.bet_model.compile(optimizer = 'sgd', loss = 'mse')
-		self.model.compile(optimizer = 'sgd', loss = 'mse')
+		self.bet_model.compile(optimizer = 'rmsprop', loss = 'mse')
+		self.model.compile(optimizer = 'rmsprop', loss = 'mse')
 		self.bet_model.summary()
+
+	#"""Bunch of getters and setters for the variables"""
 
 	def setOpponent(self, opponent):
 		self.opponent = opponent
@@ -57,24 +61,32 @@ class NeuralActor():
 	def getPrevBet(self):
 		return self.prevBet
 
+	#"""Makes a model to predict the next place to place a coin"""
+
 	def makemodel(self):
 		model = Sequential()
 
-		model.add(Dense(225, activation='relu', input_shape = (1, 2*15**2)))
+		model.add(Dense(225, input_shape = (1, 2*15**2)))
+		model.add(LeakyReLU(alpha=0.1))
 		model.add(BatchNormalization())
 		model.add(Dropout(0.2))
-		model.add(Dense(225))
+		model.add(Dense(225, activation = 'sigmoid'))
+		model.add(LeakyReLU(alpha=0.1))
 		model.add(BatchNormalization())
-		model.add(Dense(15**2))
+		model.add(Dropout(0.2))
+		model.add(Dense(15**2, activation = 'sigmoid'))
 
 		return model
 
+	#"""Makes a model to predict the next amount of money to bet"""
 	def makebetmodel(self):
 
 		inputA = Input(shape=(1,2*15**2), name = 'state')
 		inputB = Input(shape=(1,2), name = 'bets')
 		# the first branch operates on the first input
 		x = Dense(225, activation="relu")(inputA)
+		x = LeakyReLU(alpha=0.1)(x)
+		x = BatchNormalization()(x)
 		x = Dense(10)(x)
 		x = Model(inputs=inputA, outputs=x)
 		# the second branch opreates on the second input
@@ -84,13 +96,19 @@ class NeuralActor():
 		combined = concatenate([x.output, y.output])
 		# apply a FC layer and then a regression prediction on the
 		# combined outputs
-		z = Dense(225, activation="relu")(combined)
-		z = Dense(100)(z)
+		z = Dense(225, activation="sigmoid")(combined)
+		z = LeakyReLU(alpha=0.1)(z)
+		z = BatchNormalization()(z)
+		z = Dense(150, activation="sigmoid")(combined)
+		z = LeakyReLU(alpha=0.1)(z)
+		z = BatchNormalization()(z)
+		z = Dense(100, activation = 'sigmoid') (z)
 		# our model will accept the inputs of the two branches and
 		# then output a single value
 		model = Model(inputs=[x.input, y.input], outputs=z)
 		return model
 
+	#"Trains the Neural Network"
 	def fit(self, x, y, batchsize=32):
 		self.model.fit(x, y, batch_size=batchsize,
 							  epochs=1)
@@ -100,6 +118,7 @@ class NeuralActor():
 		self.bet_model.fit({'state': x, 'bets': x_bet}, y, batch_size=batchsize,
 							  epochs=1)
 
+	#"""Predicts what next move to make"""
 	def predict(self, state): 
 		x = self.model.predict(state.reshape(1,1,450))
 		print ("Prediction is: ", x)

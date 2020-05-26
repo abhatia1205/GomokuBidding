@@ -1,6 +1,6 @@
 from gomoku import *
 from NeuralActor import NeuralActor
-
+import math
 
 def train(games):
 	""" if game is won:
@@ -29,6 +29,7 @@ def train(games):
 	bet_exps = [[], []]
 	prevState = 0
 	width = 15
+	rand_coef = 0.15
 
 	for i in range(games):
 
@@ -36,14 +37,15 @@ def train(games):
 		state, betState, available = makeGame()
 
 		lastPlayer = -1
+		c=0
 		while True:
-
+			print("Playing game {} Epoch {}".format(i+1, c+1))
 			qvals1 = agents[0].bet(state, betState)
 			qvals2 = agents[1].bet(state, betState)
 
 			bet_qvals = [qvals1, qvals2]
 			bets = [0, 0]
-			if(random.random() < 0.1):
+			if(random.random() < rand_coef):
 				bets[0] = int(random.random()*betState[0])
 				bets[1] = int(random.random()*betState[1])
 			else:
@@ -59,7 +61,7 @@ def train(games):
 
 			qval = agent.predict(state.reshape(1, 2 * width**2))
 
-			if(random.random() < 0.1):
+			if(random.random() < rand_coef):
 				x = np.random.randint(available.shape[0])
 				y = np.random.randint(available.shape[1])
 
@@ -112,21 +114,22 @@ def train(games):
 			agent.getOpponent().setPrevBet(bets[1 - agent.id])
 			prevState = state
 			state, available = new_state, new_available
+			rand_coef = rand_coef*0.995
+			c += 1
 
-			if(winGame(state[:,:,0]) or winGame(state[:,:,1]) or fullGrid(available)):
+			if(winGame(state[:,:,0]) or winGame(state[:,:,1]) or fullGrid(available) or abs(betState[0] - betState[1]) == 100):
 				break
 
-				
-
-
+		
 
 
 
 				# train
-	a1.model.save("gomoku_predictor.h5")
-	a1.bet_model.save("gomoku_better.h5")
+		if(i%50 == 0):
+			a1.model.save("gomoku_predictor_2.h5")
+			a1.bet_model.save("gomoku_better_2.h5")
 
-train(20)
+train(3000)
 
 
 

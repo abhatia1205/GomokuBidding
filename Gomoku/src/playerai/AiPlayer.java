@@ -90,7 +90,12 @@ public class AiPlayer extends Player {
         while(! a){
             a = inputFile.delete();
         }
-
+        if(out[0] < 0) {
+        	out[0] = 0;
+        }
+        if(out[0] > this.getTokens()) {
+        	out[0] = this.getTokens();
+        }
         return out;
     }
 

@@ -129,6 +129,7 @@ public class GomokuWindow extends JFrame
         else if (numPlayers == 1 && bidding == 1) // 1 player (1 v ai) with bid
         {
             AiPlayer a = new AiPlayer("p2", "O", this.board, bid* 50);
+            a.setup(players.get(0));
             players.add(a);
         }
         else // 2 player (1 v 1)

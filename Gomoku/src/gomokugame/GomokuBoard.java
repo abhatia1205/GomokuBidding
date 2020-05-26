@@ -3,7 +3,7 @@ package gomokugame;
 /**
  * represents a gomokuboard
  *
- * @author ndevr
+ * @author ndevrak
  * @version May 24, 2020
  * @author Period: 4
  * @author Assignment: src

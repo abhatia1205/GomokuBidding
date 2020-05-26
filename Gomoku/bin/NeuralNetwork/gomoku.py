@@ -181,7 +181,7 @@ def check_exp(experiences, state, label, batch = 32):
 	else:
 		array = random.sample(experiences, batch-1)
 		array.append((state, label))
-		if(len(exp) >= 200):
+		if(len(exp) >= 800):
 			exp.pop(0).append((state, label))
 	return exp, np.asarray([i[0] for i in array]), np.asarray([i[1] for i in array])
 
@@ -194,7 +194,7 @@ def check_exp_bet(experiences, state, bets, label, batch = 32):
 	else:
 		array = random.sample(experiences, batch-1)
 		array.append((state, bets, label.reshape((1,100))))
-		if(len(exp) >= 200):
+		if(len(exp) >= 800):
 			exp.pop(0)
 	print("Labels for exp are: ", np.asarray([i[2] for i in array]))
 	print(np.asarray([i[2] for i in array]).shape)
