@@ -3,6 +3,7 @@ import random
 
 width = 15
 
+""" Makes a game with a state, number of available items, and amount of money each player has"""
 def makeGame(bet = 50, width = 15):
 	gameState = np.zeros((width, width, 2))
 	betState = np.array([bet, bet])
@@ -10,6 +11,8 @@ def makeGame(bet = 50, width = 15):
 
 	return gameState, betState, availablePos
 
+
+""" Method to make a move and update the betState, gameState, and peices available"""
 def makeMove(gameState, availablePos, action, bet, agent):
 	actor = agent
 	available = np.zeros(availablePos.shape)
@@ -24,7 +27,7 @@ def makeMove(gameState, availablePos, action, bet, agent):
 	else:
 		raise ValueError("Couldn't make move because {} not available for play".format(action))
 	
-
+""" checks if the game is a draw"""
 def fullGrid(available):
 	for i in range(available.shape[0]):
 		for j in range(available.shape[1]):
@@ -32,6 +35,7 @@ def fullGrid(available):
 				return False
 	return True
 
+"""  Checks if the game is one. Uses a lot of for loops, so it is kinda of inefficient but whatever"""
 def winGame(actorState):
 	shape = actorState.shape
 	print(shape)
@@ -86,6 +90,7 @@ def winGame(actorState):
 	b = b or maxc >= 5
 	return b
 
+""" Retruns a numerical reward for the state of the game. Winning is good, losing and continuing th game is bad."""
 def getReward(state, available, actor, win_reward=500, lose_reward=-1000,
 			  even_reward=-100, keepgoing_reward=-10, bet_reward = -40, won = False):
 	reward = [0,0]
@@ -102,11 +107,13 @@ def getReward(state, available, actor, win_reward=500, lose_reward=-1000,
 
 	return reward 
 
+""" Computes the 'goodness' of a bunch of guven moves using the nerual network. Returns the move that is the 'best'"""
 def computeQ( state, available, agent):
 	qval = agent.predict(state.reshape(1, 2 * width**2))
 	maxQval = max(max(qval + available.reshape((1, width**2))))
 	return maxQval
 
+""" Computes an array for the nueral network to train on"""
 def compute_label(maxQval, qvals, action, rewards, agent, won):
 	labels = [False, False]
 	print("Action is: ", action)
@@ -128,6 +135,7 @@ def compute_label(maxQval, qvals, action, rewards, agent, won):
 
 	return labels
 
+"""Computes the goodness of making a bet"""
 def computeBetQ( state, money, available, agent):
 	myQval = computeQ(state, available, agent)
 	print("MyQval: ", myQval)
@@ -150,8 +158,9 @@ def computeBetQ( state, money, available, agent):
 	elif(money[1 - agent.id] < 10*money[agent.id]):
 		add_on += 500
 
-	return (add_on + 200*myQval - 100*opponentQval + 50*nextQval)/750
+	return (add_on + 200*myQval - 100*opponentQval + 50*nextQval)/75
 
+""" Used to train the neural netork for bidding"""
 def compute_bet_label(label, qvals, bet, agent, won):
 	labels = [False, False]
 	print("Label is: ", label)
@@ -163,16 +172,18 @@ def compute_bet_label(label, qvals, bet, agent, won):
 		labels[agent.id] = newVals
 	else:
 		newVals = qvals
-		newVals[bet] = 10
+		newVals[bet] = 5
 		labels[agent.id] = newVals
 		newVals = agent.getOpponent().getPrevBetQ()
 		if(not isinstance(newVals, int)):
 			index = agent.getOpponent().getPrevBet()
-			newVals[index] = -10
+			newVals[index] = -5
 			labels[1 - agent.id] = newVals
 	print("The bet labels are: ", labels)
 	return labels
 
+""" Checks the neural networks past experiences to train with accordance to its memory. Almost like a child
+looking back into his memory to see that touching fire is bad"""
 def check_exp(experiences, state, label, batch = 32):
 	exp = experiences
 	if(len(experiences) < batch):
@@ -185,6 +196,8 @@ def check_exp(experiences, state, label, batch = 32):
 			exp.pop(0).append((state, label))
 	return exp, np.asarray([i[0] for i in array]), np.asarray([i[1] for i in array])
 
+""" Checks the neural networks past experiences to train with accordance to its memory. Almost like a child
+looking back into his memory to see that touching fire is bad"""
 def check_exp_bet(experiences, state, bets, label, batch = 32):
 	exp = experiences
 	bets = np.asarray(bets).reshape((1,2))

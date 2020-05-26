@@ -125,11 +125,11 @@ def train(games):
 
 
 				# train
-		if(i%50 == 0):
+		if((i+1)%50 == 0):
 			a1.model.save("gomoku_predictor_2.h5")
 			a1.bet_model.save("gomoku_better_2.h5")
 
-train(3000)
+train(5000)
 
 
 

@@ -14,6 +14,7 @@ import numpy as np
 
 class NeuralActor():
 
+#""" Initializes a NeuralActor to train the models. Contains all the logic for training"""
 	def __init__(self, i, money = 50):
 		self.money = money
 		self.model = self.makemodel()
@@ -27,6 +28,8 @@ class NeuralActor():
 		self.bet_model.compile(optimizer = 'rmsprop', loss = 'mse')
 		self.model.compile(optimizer = 'rmsprop', loss = 'mse')
 		self.bet_model.summary()
+
+	#"""Bunch of getters and setters for the variables"""
 
 	def setOpponent(self, opponent):
 		self.opponent = opponent
@@ -58,6 +61,8 @@ class NeuralActor():
 	def getPrevBet(self):
 		return self.prevBet
 
+	#"""Makes a model to predict the next place to place a coin"""
+
 	def makemodel(self):
 		model = Sequential()
 
@@ -65,7 +70,7 @@ class NeuralActor():
 		model.add(LeakyReLU(alpha=0.1))
 		model.add(BatchNormalization())
 		model.add(Dropout(0.2))
-		model.add(Dense(225))
+		model.add(Dense(225, activation = 'sigmoid'))
 		model.add(LeakyReLU(alpha=0.1))
 		model.add(BatchNormalization())
 		model.add(Dropout(0.2))
@@ -73,6 +78,7 @@ class NeuralActor():
 
 		return model
 
+	#"""Makes a model to predict the next amount of money to bet"""
 	def makebetmodel(self):
 
 		inputA = Input(shape=(1,2*15**2), name = 'state')
@@ -90,10 +96,10 @@ class NeuralActor():
 		combined = concatenate([x.output, y.output])
 		# apply a FC layer and then a regression prediction on the
 		# combined outputs
-		z = Dense(225, activation="relu")(combined)
+		z = Dense(225, activation="sigmoid")(combined)
 		z = LeakyReLU(alpha=0.1)(z)
 		z = BatchNormalization()(z)
-		z = Dense(150, activation="relu")(combined)
+		z = Dense(150, activation="sigmoid")(combined)
 		z = LeakyReLU(alpha=0.1)(z)
 		z = BatchNormalization()(z)
 		z = Dense(100, activation = 'sigmoid') (z)
@@ -102,6 +108,7 @@ class NeuralActor():
 		model = Model(inputs=[x.input, y.input], outputs=z)
 		return model
 
+	#"Trains the Neural Network"
 	def fit(self, x, y, batchsize=32):
 		self.model.fit(x, y, batch_size=batchsize,
 							  epochs=1)
@@ -111,6 +118,7 @@ class NeuralActor():
 		self.bet_model.fit({'state': x, 'bets': x_bet}, y, batch_size=batchsize,
 							  epochs=1)
 
+	#"""Predicts what next move to make"""
 	def predict(self, state): 
 		x = self.model.predict(state.reshape(1,1,450))
 		print ("Prediction is: ", x)
