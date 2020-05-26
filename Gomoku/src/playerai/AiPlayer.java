@@ -4,6 +4,12 @@ import gomokugame.*;
 import java.io.*;
 import java.util.*;
 
+/**
+ * is the ai player for bidding games
+ *
+ * @author Sam
+ * @author Assignment: Gomoku Final Project
+ */
 public class AiPlayer extends Player {
 
     private final String out_File_Plath = "/home/anant/eclipse-workspace/GomokuBidding/Gomoku/src/transferdata/cringer.txt";
@@ -12,29 +18,64 @@ public class AiPlayer extends Player {
 
     private Player opponent;
 
+    /**
+     * Constructs the ai player
+     * 
+     * @param n name
+     * @param s symbol
+     * @param b game baord
+     */
     public AiPlayer(String n, String s, GomokuBoard b) {
         super(n, s, b);
     }
 
+    /**
+     * Constructs it
+     * 
+     * @param n name
+     * @param s symbol
+     * @param b board
+     * @param t tokens to start
+     */
     public AiPlayer(String n, String s, GomokuBoard b, int t) {
         this(n, s, b);
         tokens = t;
     }
 
-    public void setup(Player opp){
+    /**
+     * sets up the opponent for this player
+     * 
+     * @param opp opponent
+     */
+    public void setup(Player opp) {
         this.opponent = opp;
     }
 
+    /**
+     * gets bid value
+     * 
+     * @return the bid amt
+     */
     public int bid() {
         outputBoardFile();
         this.nextMoveData = neuralInput();
         return nextMoveData[0];
     }
 
+    /**
+     * plays turn
+     * 
+     * @return the location of the move
+     */
     public Location playTurn() {
         return new Location(nextMoveData[1], nextMoveData[2]);
     }
 
+    /**
+     * turns the board into a string
+     * 
+     * @return teh board string thing
+     */
     private String board2String() {
         String s = "";
         GamePiece g = new GamePiece();
@@ -55,6 +96,9 @@ public class AiPlayer extends Player {
         return s;
     }
 
+    /**
+     * sents out the game board to the python code
+     */
     public void outputBoardFile() {
         File outputFile = new File(out_File_Plath);
         PrintWriter pw = null;
@@ -68,6 +112,11 @@ public class AiPlayer extends Player {
         pw.close();
     }
 
+    /**
+     * receives the move data from the python code
+     * 
+     * @return the move data as an array
+     */
     public int[] neuralInput() {
         File inputFile = new File(in_File_Path);
         Scanner scan = null;
@@ -82,19 +131,19 @@ public class AiPlayer extends Player {
         out[0] = scan.nextInt();
         out[1] = scan.nextInt();
         out[2] = scan.nextInt();
-        for(int i : out){
+        for (int i : out) {
             System.out.print(i);
         }
         scan.close();
         boolean a = false;
-        while(! a){
+        while (!a) {
             a = inputFile.delete();
         }
-        if(out[0] < 0) {
-        	out[0] = 0;
+        if (out[0] < 0) {
+            out[0] = 0;
         }
-        if(out[0] > this.getTokens()) {
-        	out[0] = this.getTokens();
+        if (out[0] > this.getTokens()) {
+            out[0] = this.getTokens();
         }
         return out;
     }
