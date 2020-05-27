@@ -70,11 +70,11 @@ class NeuralActor():
 		model.add(LeakyReLU(alpha=0.1))
 		model.add(BatchNormalization())
 		model.add(Dropout(0.2))
-		model.add(Dense(225, activation = 'sigmoid'))
+		model.add(Dense(225, activation = 'tanh'))
 		model.add(LeakyReLU(alpha=0.1))
 		model.add(BatchNormalization())
 		model.add(Dropout(0.2))
-		model.add(Dense(15**2, activation = 'sigmoid'))
+		model.add(Dense(15**2, activation = 'tanh'))
 
 		return model
 
@@ -96,13 +96,13 @@ class NeuralActor():
 		combined = concatenate([x.output, y.output])
 		# apply a FC layer and then a regression prediction on the
 		# combined outputs
-		z = Dense(225, activation="sigmoid")(combined)
+		z = Dense(225, activation="relu")(combined)
 		z = LeakyReLU(alpha=0.1)(z)
 		z = BatchNormalization()(z)
-		z = Dense(150, activation="sigmoid")(combined)
+		z = Dense(150, activation="relu")(combined)
 		z = LeakyReLU(alpha=0.1)(z)
 		z = BatchNormalization()(z)
-		z = Dense(100, activation = 'sigmoid') (z)
+		z = Dense(100, activation = 'tanh')(z)
 		# our model will accept the inputs of the two branches and
 		# then output a single value
 		model = Model(inputs=[x.input, y.input], outputs=z)

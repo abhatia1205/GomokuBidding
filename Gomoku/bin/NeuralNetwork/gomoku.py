@@ -158,7 +158,7 @@ def computeBetQ( state, money, available, agent):
 	elif(money[1 - agent.id] < 10*money[agent.id]):
 		add_on += 500
 
-	return (add_on + 200*myQval - 100*opponentQval + 50*nextQval)/75
+	return add_on + 0.4*myQval - 0.2*opponentQval + 0.2*nextQval
 
 """ Used to train the neural netork for bidding"""
 def compute_bet_label(label, qvals, bet, agent, won):

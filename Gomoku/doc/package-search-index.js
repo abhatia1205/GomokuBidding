@@ -1,0 +1,1 @@
+packageSearchIndex = [{"l":"All Packages","url":"allpackages-index.html"},{"m":"gomoku","l":"app"},{"m":"gomoku","l":"gomokugame"},{"m":"gomoku","l":"minimax"},{"m":"gomoku","l":"playerai"}]

@@ -321,8 +321,8 @@ public class BidWindow extends JFrame
 
                 else if ( num2 > num1 )
                 {
-                    players.get( 0 ).addTokens( num1 );
-                    players.get( 1 ).subTokens( num1 );
+                    players.get( 0 ).addTokens( num2 );
+                    players.get( 1 ).subTokens( num2 );
                     nextPlayer = 2;
                     close();
                 }
